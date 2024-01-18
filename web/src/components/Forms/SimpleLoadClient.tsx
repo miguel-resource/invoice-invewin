@@ -1,8 +1,9 @@
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 import { useFormik } from "formik";
 import { RFCInitial, RFCSchema } from "@/schemas/RFC";
+import { useSelector } from "react-redux";
 
 export default function LoadClientRFC() {
   const router = useRouter();
@@ -11,6 +12,8 @@ export default function LoadClientRFC() {
     "success"
   );
   const [open, setOpen] = useState(false);
+  const sale = useSelector((state: any) => state.sales);
+
 
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
@@ -28,10 +31,13 @@ export default function LoadClientRFC() {
     validationSchema: RFCSchema,
     initialValues: RFCInitial,
     onSubmit: (values) => {
-      console.log(values);
       handleInvoice();
     },
   });
+
+  useEffect(() => {
+    console.log(sale);
+  }, [sale]);
 
   return (
     <form
@@ -47,6 +53,9 @@ export default function LoadClientRFC() {
       "
       >
         <div className="mb-10px">
+          {/* <p>
+            <strong>Cliente:</strong> {sale.id}
+          </p> */}
           <label className="form-label mb-24">RFC</label>
           <div className="mt-5px">
             <input

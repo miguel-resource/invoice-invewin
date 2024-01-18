@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+
 const details = [
   {
     name: "Subtotal",
@@ -10,23 +12,24 @@ const details = [
 ];
 
 export default function AmountDetails() {
+  const sale = useSelector((state: any) => state.sales);
   return (
     <div className="panel panel-inverse p-16">
-      <div
-        className="border-b-2 border-gray-300 mb-4 "
-      >
+      <div className="border-b-2 border-gray-300 mb-4 ">
         <h3
           className="text-base
             font-bold
             text-gray-500"
         >
-          00000000-0000-0000-0000-000000000000
+          {sale.id}
         </h3>
 
         <section>
-          <ul className="pl-0
+          <ul
+            className="pl-0
             flex flex-col gap-2
-          ">
+          "
+          >
             <li
               className="text-xs
                         text-gray-500
@@ -52,38 +55,33 @@ export default function AmountDetails() {
               >
                 De:{" "}
               </span>
-              Nombre de la empresa
+            {sale.emisor.razonSocial}
             </li>
           </ul>
         </section>
       </div>
 
       <div className="flex flex-col justify-between mt-2">
-        {details.map((detail) => (
-          <div className="flex justify-between items-center ">
 
+        <div className="flex justify-between items-center ">
+          <p className="text-lg  text-basete-400 font-semibold ">Subtotal</p>
+          <p className="text-lg  text-basete-400 font-semibold ">
+            $ {sale.subtotal.toFixed(2)}
+          </p>
+        </div>
 
-            {detail.name === "Total" ? (
-              <p className="text-2xl text-slate-700 font-semibold ">
-                {detail.name}
-              </p>
-            ) : (
-              <p className="text-lg text-slate-400 font-semibold ">
-                {detail.name}
-              </p>
-            )}
-
-            {detail.name === "Total" ? (
-              <p className=" text-2xl text-gray-700 font-semibold ">
-                {detail.value}
-              </p>
-            ) : (
-              <p className=" text-lg text-slate-700 font-semibold ">
-                {detail.value}
-              </p>
-            )}
-          </div>
-        ))}
+        <div className="flex justify-between items-center ">
+          <p className="text-2xl text-slate-700 font-semibold ">Total</p>
+          <p className=" text-2xl text-gray-700 font-semibold ">
+            $ {sale.total.toFixed(2)}
+          </p>
+        </div>
+      </div>
+      <div className="flex justify-end mb-4 ">
+        <button type="button" className="btn btn-md btn-blue mt-2 text-sm">
+          <i className="fa fa-pencil text-base mr-2" />
+          Editar datos de facturación
+        </button>
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ export default function InvoicePage() {
       >
         <section className="m-auto w-10/12">
           <div className="panel-body flex flex-row justify-center gap-10 items-center pb-0 w-full">
-            <AmountDetails />
+            <AmountDetails  />
             <InvoiceDetails />
           </div>
 

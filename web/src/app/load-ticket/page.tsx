@@ -1,4 +1,3 @@
-
 "use client";
 
 import SimpleInvoice from "@/components/Forms/SimpleInvoice";

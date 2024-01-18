@@ -1,12 +1,13 @@
 "use client";
 
-import dynamic from 'next/dynamic';
-import SimpleLoadClient from '@/components/Forms/SimpleLoadClient';
+import dynamic from "next/dynamic";
+import SimpleLoadClient from "@/components/Forms/SimpleLoadClient";
+
 
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
-    ssr: false,
-  });
-  
+  ssr: false,
+});
+
 export default function LoadClientRFC() {
   return (
     <MainWrapper>
@@ -18,5 +19,6 @@ export default function LoadClientRFC() {
           <SimpleLoadClient />
         </div>
       </div>
-    </MainWrapper>  );
+    </MainWrapper>
+  );
 }

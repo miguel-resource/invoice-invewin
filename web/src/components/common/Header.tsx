@@ -55,18 +55,25 @@ export default function Header() {
                 aria-labelledby="options-menu"
               >
                 <Link
-                  href="/datos"
+                  href="/login-supplier"
                   className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
                   role="menuitem"
                 >
                   Datos de Facturación
                 </Link>
                 <Link
-                  href="/facturas"
+                  href="/invoices"
                   className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
                   role="menuitem"
                 >
                   Facturas
+                </Link>
+                <Link
+                  href="/certificates"
+                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
+                  role="menuitem"
+                >
+                  Certificados
                 </Link>
               </div>
             </div>

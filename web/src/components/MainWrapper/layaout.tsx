@@ -1,5 +1,8 @@
-import Head from "next/head";
+"use client";
+
 import Header from "@/components/common/Header";
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
 
 export default function RootLayout({
   children,
@@ -7,18 +10,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <title>Administrator</title>
-        <link href="./../../../public/admin/css/app.min.css" rel="stylesheet" />
-        <link
-          href="./../../../public/admin/css/vendor.min.css"
-          rel="stylesheet"
-        /> 
-      </head>
-      <body>
-        <Header />
-        {children}</body>
-    </html>
+    <Provider store={store}>
+      <html lang="en">
+        <head>
+          <title>Administrator</title>
+          <link
+            href="./../../../public/admin/css/app.min.css"
+            rel="stylesheet"
+          />
+          <link
+            href="./../../../public/admin/css/vendor.min.css"
+            rel="stylesheet"
+          />
+        </head>
+        <body>
+          <Header />
+          {children}
+        </body>
+      </html>
+    </Provider>
   );
 }

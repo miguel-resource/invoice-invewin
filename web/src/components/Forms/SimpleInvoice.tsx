@@ -3,6 +3,10 @@ import { useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 import { useFormik } from "formik";
 import { UUIDInitial, UUIDSchema } from "@/schemas/UUID";
+import { getSale } from "@/services/Invewin";
+import { useDispatch } from "react-redux";
+import { setSale } from "@/redux/saleSlice";
+
 
 export default function SimpleInvoice() {
   const router = useRouter();
@@ -12,17 +16,31 @@ export default function SimpleInvoice() {
     "success"
   );
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
 
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    setMessage("Ticket cargado correctamente");
-    setType("success");
-    setOpen(true);
+    getSale(uuid).then((res) => {
+      if (res.data) {
+        setMessage("Ticket cargado correctamente");
+        setType("success");
+        setOpen(true);
 
-    setTimeout(() => {
-      router.push("/load-client");
-    }, 2000);
+        dispatch(setSale(res.data));
+
+        setTimeout(() => {
+          router.push("/load-client");
+        }, 2000);
+      }
+  
+    }).catch((err) => {
+      setMessage("El ticket no existe, intente de nuevo");
+      setType("error");
+      setOpen(true);
+    }
+    );
   };
 
   const handleUuidChange = (e: any) => {
@@ -48,7 +66,6 @@ export default function SimpleInvoice() {
     validateOnChange: true,
     validateOnMount: false,
     onSubmit: (values) => {
-      console.log(values);
       handleInvoice();
     },
   });
@@ -77,17 +94,15 @@ export default function SimpleInvoice() {
               name="uuid"
               onChange={(e) => {
                 handleUuidChange(e);
-                formik.handleChange(e); 
+                formik.handleChange(e);
               }}
               value={uuid}
             />
 
-               <span className="text-xs text-red-500 italic">
-                {formik.errors.uuid}
-              </span>
+            <span className="text-xs text-red-500 italic">
+              {formik.errors.uuid}
+            </span>
           </div>
-
-
         </div>
 
         {/* button */}

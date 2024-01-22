@@ -1,5 +1,5 @@
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect, useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 import { useFormik } from "formik";
 import { RFCInitial, RFCSchema } from "@/schemas/RFC";
@@ -15,18 +15,17 @@ export default function LoadClientRFC() {
   const [open, setOpen] = useState(false);
   const sale = useSelector((state: any) => state.sales);
 
+  useLayoutEffect(() => {
+    if (!sale.id) {
+      redirect("/load-ticket");
+    }
+  }, []);
+
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
     getClientOnline(sale.id, formik.values.rfc)
       .then((res) => {
-        console.log(res.data.codigoEstatus);
-        // setMessage("RFC cargado correctamente");
-        // setType("success");
-        // setOpen(true);
-        // setTimeout(() => {
-        //   router.push("/invoice");
-        // }, 2000);
 
         if (
           res.data.codigoEstatus === 404 ||

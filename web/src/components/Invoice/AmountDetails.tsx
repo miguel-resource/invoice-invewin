@@ -1,3 +1,5 @@
+import { useRouter } from "next/navigation";
+import { useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 
 const details = [
@@ -12,7 +14,15 @@ const details = [
 ];
 
 export default function AmountDetails() {
+  const router = useRouter();
   const sale = useSelector((state: any) => state.sales);
+
+  useLayoutEffect(() => {
+    if (!sale.id) {
+      router.push("/load-ticket");
+    }
+  }, []);
+  
   return (
     <div className="panel panel-inverse p-16">
       <div className="border-b-2 border-gray-300 mb-4 ">

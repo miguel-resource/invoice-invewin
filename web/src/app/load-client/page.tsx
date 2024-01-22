@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import SimpleLoadClient from "@/components/Forms/SimpleLoadClient";
 
-
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
 });

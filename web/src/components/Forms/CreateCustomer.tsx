@@ -5,7 +5,7 @@ import {
 import { getCatalogs } from "@/services/Catalog";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import CommonAlert from "../common/Alert";
 import { postClientOnline } from "@/services/ClientOnline";
 import { useSelector } from "react-redux";
@@ -66,6 +66,12 @@ export default function CreateCustomer() {
       handleInvoice(values);
     },
   });
+
+  useLayoutEffect(() => {
+    if (!sale.id) {
+      router.push("/load-ticket");
+    }
+  }, []);
 
   useEffect(() => {
     handleGetCatalogs();

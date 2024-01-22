@@ -3,8 +3,9 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 import { useFormik } from "formik";
 import { RFCInitial, RFCSchema } from "@/schemas/RFC";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getClientOnline } from "@/services/ClientOnline";
+import { setClient } from "@/redux/clientSlice";
 
 export default function LoadClientRFC() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function LoadClientRFC() {
   );
   const [open, setOpen] = useState(false);
   const sale = useSelector((state: any) => state.sales);
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
     if (!sale.id) {
@@ -24,7 +26,7 @@ export default function LoadClientRFC() {
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    getClientOnline(sale.id, formik.values.rfc)
+    getClientOnline(sale.emisor.empresaId, formik.values.rfc)
       .then((res) => {
 
         if (
@@ -35,6 +37,7 @@ export default function LoadClientRFC() {
           setType("error");
           setOpen(true);
 
+
           setTimeout(() => {
             router.push("/create-client");
           }, 2000);
@@ -42,6 +45,9 @@ export default function LoadClientRFC() {
           setMessage("RFC cargado correctamente");
           setType("success");
           setOpen(true);
+
+          dispatch(setClient(res.data[0]));
+
           setTimeout(() => {
             router.push("/invoice");
           }, 2000);

@@ -2,11 +2,8 @@
 
 import dynamic from "next/dynamic";
 import AmountDetails from "@/components/Invoice/AmountDetails";
-import InvoiceDetails from "@/components/Invoice/InoiceDetails";
 import CommonAlert from "@/components/common/Alert";
 import { useLayoutEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import router from "next/router";
 
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
@@ -36,8 +33,8 @@ export default function InvoicePage() {
       >
         <section className="m-auto w-10/12">
           <div className="panel-body flex flex-row justify-center gap-10 items-center pb-0 w-full">
-            <AmountDetails  />
-            <InvoiceDetails />
+            <AmountDetails />
+            {/* <InvoiceDetails /> */}
           </div>
 
           <div
@@ -51,7 +48,7 @@ export default function InvoicePage() {
             <button
               onClick={handleInvoice}
               type="button"
-              className="btn btn-primary w-1/2 mt-0"
+              className="btn btn-primary w-3/12 mt-0"
             >
               Timbrar
             </button>

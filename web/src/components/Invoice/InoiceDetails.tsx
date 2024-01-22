@@ -1,9 +1,11 @@
 import { getCatalogs } from "@/services/Catalog";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function InvoiceDetails() {
   const [catalogPayMethod, setCatalogPayMethod] = useState([]);
   const [catalogUseCFDI, setCatalogUseCFDI] = useState([]);
+  const client = useSelector((state: any) => state.client);
 
   const handleGetCatalogs = async () => {
     const res = await getCatalogs();
@@ -35,7 +37,8 @@ export default function InvoiceDetails() {
         <li className=" text-slate-700 flex flex-row justify-between ">
           <span className=" text-slate-400 w-1/2">Uso de CFDI:</span>
 
-          <select className="form-select w-1/2">
+          <select
+          className="form-select w-1/2">
             <option value="">Selecciona una opción</option>
             {catalogUseCFDI.map((item: any) => (
               <option key={item.c_ClaveProdServ} value={item.c_ClaveProdServ}>

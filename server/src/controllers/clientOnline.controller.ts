@@ -10,8 +10,8 @@ const http = axios.create({
 namespace ClientOnlineController {
   export async function getClientByRFC(ctx: any) {
     const accessToken = await InvewinController.auth();
-    
-    const { empresaID, rfc} = ctx.request.body;
+
+    const { empresaID, rfc } = ctx.request.body;
 
     const data = await http
       .get(
@@ -27,15 +27,15 @@ namespace ClientOnlineController {
         }
       )
       .catch((error) => {
-        console.log("error", error.response.data);
         ctx.status = 400;
         ctx.body = error.response.data;
 
         return error.response.data;
       });
+    console.log("data", typeof data.data);
 
     ctx.status = 200;
-    ctx.body = data;
+    ctx.body = data.data
   }
 
   export async function createClient(ctx: any) {
@@ -44,7 +44,10 @@ namespace ClientOnlineController {
 
     const data = await http
       .post(
-        process.env.INVEWIN_API_URL + "/empresas/" + empresaID + "/clientesonline",
+        process.env.INVEWIN_API_URL +
+          "/empresas/" +
+          empresaID +
+          "/clientesonline",
         client,
         {
           headers: {
@@ -59,7 +62,7 @@ namespace ClientOnlineController {
 
         return error.response.data;
       });
-      console.log("data", data);
+    console.log("data", data);
 
     ctx.status = 200;
     ctx.body = data;

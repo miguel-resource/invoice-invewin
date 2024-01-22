@@ -145,7 +145,7 @@ export const saleSlice = createSlice({
   reducers: {
     setSale: (state, action) => {
         const sale = action.payload;
-        console.log("Sale slice: ", sale);
+    
         state.id = sale.id;
         state.fecha = sale.fecha;
         state.total = sale.total;

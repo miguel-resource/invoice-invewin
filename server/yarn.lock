@@ -148,6 +148,13 @@
   resolved "https://registry.npmjs.org/@types/keygrip/-/keygrip-1.0.6.tgz"
   integrity sha512-lZuNAY9xeJt7Bx4t4dx0rYCDqGPW8RXhQZK1td7d4H6E9zYbLoOtjBvfwdTKpsyxQI/2jv+armjX/RW+ZNpXOQ==
 
+"@types/koa-bodyparser@^4.3.12":
+  version "4.3.12"
+  resolved "https://registry.npmjs.org/@types/koa-bodyparser/-/koa-bodyparser-4.3.12.tgz#c19355e504422fd2a8fdb3496a32da48cd29133c"
+  integrity sha512-hKMmRMVP889gPIdLZmmtou/BijaU1tHPyMNmcK7FAHAdATnRcGQQy78EqTTxLH1D4FTsrxIzklAQCso9oGoebQ==
+  dependencies:
+    "@types/koa" "*"
+
 "@types/koa-compose@*":
   version "3.2.8"
   resolved "https://registry.npmjs.org/@types/koa-compose/-/koa-compose-3.2.8.tgz"
@@ -415,7 +422,7 @@ cliss@0.0.2:
     strip-ansi "^4.0.0"
     yargs-parser "^7.0.0"
 
-co-body@^6.1.0:
+co-body@^6.0.0, co-body@^6.1.0:
   version "6.1.0"
   resolved "https://registry.npmjs.org/co-body/-/co-body-6.1.0.tgz#d87a8efc3564f9bfe3aced8ef5cd04c7a8766547"
   integrity sha512-m7pOT6CdLN7FuXUcpuz/8lfQ/L77x8SchHCF4G0RBTJO20Wzmhn5Sp4/5WsKy8OSpifBSUrmg83qEqaDHdyFuQ==
@@ -504,6 +511,11 @@ cookies@~0.9.0:
   dependencies:
     depd "~2.0.0"
     keygrip "~1.1.0"
+
+copy-to@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/copy-to/-/copy-to-2.0.1.tgz#2680fbb8068a48d08656b6098092bdafc906f4a5"
+  integrity sha512-3DdaFaU/Zf1AnpLiFDeNCD4TOWe3Zl2RZaTzUvWiIk5ERzcCodOE20Vqq4fzCbNoHURFHT4/us/Lfq+S2zyY4w==
 
 crc-32@~1.2.0:
   version "1.2.2"
@@ -949,6 +961,15 @@ koa-body@^6.0.1:
     co-body "^6.1.0"
     formidable "^2.0.1"
     zod "^3.19.1"
+
+koa-bodyparser@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.npmjs.org/koa-bodyparser/-/koa-bodyparser-4.4.1.tgz#a908d848e142cc57d9eece478e932bf00dce3029"
+  integrity sha512-kBH3IYPMb+iAXnrxIhXnW+gXV8OTzCu8VPDqvcDHW9SQrbkHmqPQtiZwrltNmSq6/lpipHnT7k7PsjlVD7kK0w==
+  dependencies:
+    co-body "^6.0.0"
+    copy-to "^2.0.1"
+    type-is "^1.6.18"
 
 koa-compose@^4.1.0:
   version "4.1.0"
@@ -1434,7 +1455,7 @@ tsscmp@1.0.6:
   resolved "https://registry.npmjs.org/tsscmp/-/tsscmp-1.0.6.tgz"
   integrity sha512-LxhtAkPDTkVCMQjt2h6eBVY28KCjikZqZfMcC15YBeNjkgUpdCfBu5HoiOTDu86v6smE8yOjyEktJ8hlbANHQA==
 
-type-is@^1.6.16:
+type-is@^1.6.16, type-is@^1.6.18:
   version "1.6.18"
   resolved "https://registry.npmjs.org/type-is/-/type-is-1.6.18.tgz"
   integrity sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==

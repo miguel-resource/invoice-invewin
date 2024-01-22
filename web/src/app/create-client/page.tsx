@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 // import SimpleCreateClient from "@/components/Forms/SimpleCreateClient";
-import VerifySupplier from "@/components/Forms/GeneralForm";
+import VerifySupplier from "@/components/Forms/EditSupplier";
+import CreateCustomer from "@/components/Forms/CreateCustomer";
 
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
@@ -16,7 +17,7 @@ export default function CreateClientPage() {
         data-sortable-id="form-stuff-1"
       >
         <div className="panel-body">
-          <VerifySupplier />
+          <CreateCustomer />
         </div>
       </div>
     </MainWrapper>

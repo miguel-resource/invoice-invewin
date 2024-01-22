@@ -4,6 +4,7 @@ import CommonAlert from "@/components/common/Alert";
 import { useFormik } from "formik";
 import { RFCInitial, RFCSchema } from "@/schemas/RFC";
 import { useSelector } from "react-redux";
+import { getClientOnline } from "@/services/ClientOnline";
 
 export default function LoadClientRFC() {
   const router = useRouter();
@@ -14,17 +15,47 @@ export default function LoadClientRFC() {
   const [open, setOpen] = useState(false);
   const sale = useSelector((state: any) => state.sales);
 
-
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    setMessage("RFC cargado correctamente");
-    setType("success");
-    setOpen(true);
+    getClientOnline(sale.id, formik.values.rfc)
+      .then((res) => {
+        console.log(res.data.codigoEstatus);
+        // setMessage("RFC cargado correctamente");
+        // setType("success");
+        // setOpen(true);
+        // setTimeout(() => {
+        //   router.push("/invoice");
+        // }, 2000);
 
-    setTimeout(() => {
-      router.push("/invoice");
-    }, 2000);
+        if (
+          res.data.codigoEstatus === 404 ||
+          res.data.mensaje === "No existe la empresa indicada"
+        ) {
+          setMessage("RFC no encontrado");
+          setType("error");
+          setOpen(true);
+
+          setTimeout(() => {
+            router.push("/create-client");
+          }, 2000);
+        }else{
+          setMessage("RFC cargado correctamente");
+          setType("success");
+          setOpen(true);
+          setTimeout(() => {
+            router.push("/invoice");
+          }, 2000);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setMessage("RFC no encontrado");
+        setType("error");
+        setOpen(true);
+      });
+
+    console.log("RFC cargado correctamente", formik.values.rfc, sale.id);
   };
 
   const formik = useFormik({
@@ -34,10 +65,6 @@ export default function LoadClientRFC() {
       handleInvoice();
     },
   });
-
-  useEffect(() => {
-    console.log(sale);
-  }, [sale]);
 
   return (
     <form

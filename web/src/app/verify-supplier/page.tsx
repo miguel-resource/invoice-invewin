@@ -1,6 +1,6 @@
 "use client";
 
-import FormVerifySupplier from "@/components/Forms/GeneralForm";
+import FormVerifySupplier from "@/components/Forms/EditSupplier";
 import dynamic from "next/dynamic";
 
 

@@ -2,26 +2,35 @@ import * as Yup from 'yup';
 
 
 export const VerifySupplierInitial = {
-    rfc: "XAXX010101000",
-    businessName: "Empresa de Prueba",
-    cp: "",
-    taxRegime: "",
-    };
+    rfc: "",
+    razonSocial: "",
+    codigoPostal: "",
+    regimenFiscal: "",
+    email: "",
+    usoCfdi: "",  
+};
 
 export const VerifySupplierSchema = Yup.object().shape({
     rfc: Yup.string()
     .required("Requerido")
     .min(12, "Muy corto!")
     .max(13, "Muy largo!"),
-    businessName: Yup.string()
+    razonSocial: Yup.string()
     .required("Requerido")
     .min(6, "Muy corto!")
     .max(50, "Muy largo!"),
-    cp: Yup.number()
+    codigoPostal: Yup.number()
     .required("Requerido")
     .typeError("Debe ser un número")
     .min(10000, "Muy corto!")
     .max(99999, "Muy largo!"),
-    taxRegime: Yup.string()
+    regimenFiscal: Yup.string()
+    .required("Requerido"),
+    email: Yup.string()
     .required("Requerido")
+    .email("Correo electrónico inválido")
+    .min(6, "Muy corto!")
+    .max(50, "Muy largo!"),
+    usoCfdi: Yup.string()
+    .required("Requerido"),
 });

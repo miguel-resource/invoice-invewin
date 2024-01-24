@@ -27,15 +27,19 @@ namespace ClientOnlineController {
         }
       )
       .catch((error) => {
+        console.log("error", error.response.data);
         ctx.status = 400;
         ctx.body = error.response.data;
 
         return error.response.data;
       });
-    console.log("data", typeof data.data);
 
+  
     ctx.status = 200;
-    ctx.body = data.data;
+
+    if (data.data) {
+      ctx.body = data.data;
+    }
   }
 
   export async function createClient(ctx: any) {
@@ -71,7 +75,6 @@ namespace ClientOnlineController {
   export async function updateClient(ctx: any) {
     const accessToken = await InvewinController.auth();
     const { companyID, clientID, client } = ctx.request.body;
-
 
     await http
       .put(

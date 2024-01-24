@@ -11,9 +11,15 @@ import {
 } from "../../schemas/VerifySupplier";
 
 import { getCatalogs } from "@/services/Catalog";
+import { useDispatch, useSelector } from "react-redux";
+import { putClientOnline } from "@/services/ClientOnline";
+import { setClient } from "@/redux/clientSlice";
 
-export default function VerifySupplier() {
-  const router = useRouter();
+type Props = {
+  onClose: () => void;
+};
+
+export default function EditClient({ onClose }: Props) {
 
   const [message, setMessage] = useState("");
   const [type, setType] = useState<"success" | "error" | "warning" | "info">(
@@ -22,16 +28,43 @@ export default function VerifySupplier() {
   const [open, setOpen] = useState(false);
   const [catalogRegime, setCatalogRegime] = useState([]);
 
+  const client = useSelector((state: any) => state.client);
+  const sale = useSelector((state: any) => state.sales);
+
+  const dispatch = useDispatch();
+
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    setMessage("Datos actualizados correctamente");
-    setType("success");
-    setOpen(true);
+    formik.values.usoCfdi && formik.values.usoCfdi !== '' ? formik.values.usoCfdi : formik.values.usoCfdi = client.usoCfdi;
 
-    setTimeout(() => {
-      router.push("/load-ticket");
-    }, 2000);
+
+    console.log(formik.values);
+    const data = {
+      client: formik.values,
+      clientID: client.id,
+      companyID: sale.emisor.empresaId
+    };
+
+    putClientOnline(data)
+      .then((res) => {
+        console.log(res);
+        setMessage("Datos actualizados correctamente");
+        setType("success");
+        setOpen(true);
+
+        setTimeout(() => {
+          // router.push("/load-ticket");
+          dispatch(setClient(formik.values));
+          onClose();
+        }, 2000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setMessage("Datos no actualizados, intente de nuevo");
+        setType("error");
+        setOpen(true);
+      });
   };
 
   const handleGetCatalogs = async () => {
@@ -43,16 +76,19 @@ export default function VerifySupplier() {
   const formik = useFormik({
     validationSchema: VerifySupplierSchema,
     initialValues: VerifySupplierInitial,
+    validateOnBlur: true,
     validateOnChange: true,
-    validateOnMount: false,
     onSubmit: (values) => {
-      console.log(values);
       handleInvoice();
     },
   });
 
   useEffect(() => {
     handleGetCatalogs();
+    formik.setFieldValue("rfc", client.rfc);
+    formik.setFieldValue("razonSocial", client.razonSocial);
+    formik.setFieldValue("codigoPostal", client.codigoPostal);
+    formik.setFieldValue("regimenFiscal", client.regimenFiscal);
   }, []);
 
   return (
@@ -60,13 +96,20 @@ export default function VerifySupplier() {
       className="flex items-center justify-center h-full"
       onSubmit={formik.handleSubmit}
     >
-      <div className="row mb-15px w-2/6 bg-white shadow-lg mx-auto p-8 rounded-xl">
+      <div
+        className="row  w-full
+          bg-white
+          shadow-lg
+          mx-auto p-8
+          rounded-xl
+        "
+      >
         <div className="mb-10px">
           <label className="form-label mb-24">RFC</label>
           <div className="mt-5px">
             <input
               type="text"
-              className="form-control mb-5px w-full"
+              className="form-control w-full"
               placeholder="RFC"
               id="rfc"
               name="rfc"
@@ -77,7 +120,7 @@ export default function VerifySupplier() {
           </div>
 
           <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.rfc}
+            {formik.errors.rfc && formik.touched.rfc ? formik.errors.rfc : null}
           </span>
         </div>
 
@@ -92,12 +135,13 @@ export default function VerifySupplier() {
               onChange={formik.handleChange}
               name="razonSocial"
               id="razonSocial"
-              disabled={true}
             />
           </div>
 
           <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.razonSocial}
+            {formik.errors.razonSocial && formik.touched.razonSocial
+              ? formik.errors.razonSocial
+              : null}
           </span>
         </div>
 
@@ -116,7 +160,9 @@ export default function VerifySupplier() {
           </div>
 
           <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.codigoPostal}
+            {formik.errors.codigoPostal && formik.touched.codigoPostal
+              ? formik.errors.codigoPostal
+              : null}
           </span>
         </div>
 
@@ -150,7 +196,11 @@ export default function VerifySupplier() {
 
         {/* button */}
         <div className="flex justify-center mt-8">
-          <button type="submit" className="btn  btn-primary mt-3">
+          <button
+            disabled={!formik.isValid}
+            type="submit"
+            className="btn  btn-primary mt-3"
+          >
             Actualizar datos
           </button>
         </div>

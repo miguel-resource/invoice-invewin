@@ -109,7 +109,7 @@ export default function CreateCustomer() {
           </span>
         </div>
 
-        <div className="mb-10px">
+        {/* <div className="mb-10px">
           <label className="form-label mb-24">Email</label>
           <div className="mt-5px">
             <input
@@ -126,7 +126,7 @@ export default function CreateCustomer() {
           <span className="text-xs text-red-500 italic" id="rfc-helper-text">
             {formik.errors.email}
           </span>
-        </div>
+        </div> */}
 
         <div className="mb-10px">
           <label className="form-label mb-24">Razón Social</label>

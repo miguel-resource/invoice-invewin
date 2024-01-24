@@ -9,9 +9,9 @@ const http = axios.create({
   },
 });
 
-export const getClientOnline = (empresaID: string, rfc: string) => {
+export const getClientOnline = (companyID: string, rfc: string) => {
   return http.post(path, {
-    empresaID,
+    empresaID: companyID,
     rfc,
   });
 };
@@ -19,3 +19,7 @@ export const getClientOnline = (empresaID: string, rfc: string) => {
 export const postClientOnline = (data: any) => {
   return http.post(path + "/create", data);
 };
+
+export const putClientOnline = (data: any) => {
+  return http.post(path + "/update", data);
+}

@@ -35,7 +35,7 @@ namespace ClientOnlineController {
     console.log("data", typeof data.data);
 
     ctx.status = 200;
-    ctx.body = data.data
+    ctx.body = data.data;
   }
 
   export async function createClient(ctx: any) {
@@ -66,6 +66,35 @@ namespace ClientOnlineController {
 
     ctx.status = 200;
     ctx.body = data;
+  }
+
+  export async function updateClient(ctx: any) {
+    const accessToken = await InvewinController.auth();
+    const { companyID, clientID, client } = ctx.request.body;
+
+
+    await http
+      .put(
+        process.env.INVEWIN_API_URL +
+          "/empresas/" +
+          companyID +
+          "/clientesonline/" +
+          clientID,
+        client,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .catch((error) => {
+        ctx.status = 400;
+        ctx.body = error.response.data;
+
+        return error.response.data;
+      });
+
+    ctx.status = 200;
   }
 }
 

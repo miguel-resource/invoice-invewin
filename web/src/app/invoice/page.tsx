@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import AmountDetails from "@/components/Invoice/AmountDetails";
 import CommonAlert from "@/components/common/Alert";
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
@@ -17,24 +17,21 @@ export default function InvoicePage() {
   const [open, setOpen] = useState(false);
 
   const handleInvoice = () => {
-    console.log("Timbrar factura");
+    
     setMessage("Factura timbrada correctamente");
     setType("success");
     setOpen(true);
   };
 
+  
+
   return (
     <MainWrapper>
-      <div
-        className="panel h-full w-full
-        
-      "
-        data-sortable-id="form-stuff-1"
-      >
-        <section className="m-auto w-10/12">
+      <div className="panel h-full w-full " data-sortable-id="form-stuff-1">
+        <section className="m-auto w-11/12">
           <div className="panel-body flex flex-row justify-center gap-10 items-center pb-0 w-full">
             <AmountDetails />
-            {/* <InvoiceDetails /> */}
+            
           </div>
 
           <div

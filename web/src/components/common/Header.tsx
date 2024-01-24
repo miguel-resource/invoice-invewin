@@ -63,7 +63,7 @@ export default function Header() {
                 </Link>
                 
                 <Link
-                  href="/login-supplier"
+                  href="/verify-supplier"
                   className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
                   role="menuitem"
                 >

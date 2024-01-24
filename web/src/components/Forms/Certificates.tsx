@@ -1,6 +1,12 @@
 import { useFormik } from "formik";
+import { useRouter } from "next/navigation";
+import { useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function CertificatesForm() {
+  const router = useRouter();
+  const company = useSelector((state: any) => state.company);
+
   const formik = useFormik({
     // validationSchema: VerifySupplierSchema,
     initialValues: {
@@ -14,6 +20,12 @@ export default function CertificatesForm() {
       // handleInvoice(values);
     },
   });
+
+  useLayoutEffect(() => {
+    if (!company.user) {
+      router.push("/login-supplier");
+    }
+  }, [company]);
 
   return (
     <form

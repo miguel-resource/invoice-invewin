@@ -3,11 +3,13 @@ import CommonAlert from "../common/Alert";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { ErrorMessage, useFormik } from "formik";
+import { useFormik } from "formik";
 import {
   LogginSupplierInitial,
   LogginSupplierSchema,
 } from "@/schemas/LoginSupplier";
+import { useDispatch } from "react-redux";
+import { setCompany } from "@/redux/companySlice";
 
 export default function LoginSupplier() {
   const router = useRouter();
@@ -18,11 +20,12 @@ export default function LoginSupplier() {
   );
   const [open, setOpen] = useState(false);
 
+  const dispatch = useDispatch();
+
   const formik = useFormik({
     validationSchema: LogginSupplierSchema,
     initialValues: LogginSupplierInitial,
     onSubmit: (values) => {
-      console.log(values);
       handleInvoice();
     },
   });
@@ -35,7 +38,8 @@ export default function LoginSupplier() {
     setOpen(true);
 
     setTimeout(() => {
-      router.push("/verify-supplier");
+      dispatch(setCompany(formik.values));
+      router.push("/invoices");
     }, 2000);
   };
 

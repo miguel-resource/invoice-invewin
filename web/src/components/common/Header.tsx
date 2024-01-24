@@ -1,8 +1,11 @@
+import { cp } from "fs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const path = usePathname();
+  const company = useSelector((state: any) => state.company);
 
   return (
     <div id="header" className="app-header border-b-2  border-slate-500">
@@ -32,7 +35,6 @@ export default function Header() {
             </Link>
           </div>
 
-
           <div className="navbar-item dropdown dropdown-user relative group">
             <a
               // href={"/login-supplier"}
@@ -41,8 +43,8 @@ export default function Header() {
                 hover:after:opacity-100 hover:after:z-20
                 ${
                   path === "/login-supplier"
-                  ? "after:scale-x-100 after:opacity-100 after:z-20"
-                  : ""
+                    ? "after:scale-x-100 after:opacity-100 after:z-20"
+                    : ""
                 }`}
             >
               <span className="d-none d-md-inline">Empresa</span>
@@ -54,35 +56,41 @@ export default function Header() {
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
               >
-                <Link
-                  href="/login-supplier"
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
-                  role="menuitem"
-                >
-                  Iniciar Sesión
-                </Link>
-                
-                <Link
-                  href="/verify-supplier"
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
-                  role="menuitem"
-                >
-                  Datos de Facturación
-                </Link>
-                <Link
-                  href="/invoices"
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
-                  role="menuitem"
-                >
-                  Facturas
-                </Link>
-                <Link
-                  href="/certificates"
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
-                  role="menuitem"
-                >
-                  Certificados
-                </Link>
+                {company.user === "" && (
+                  <Link
+                    href="/login-supplier"
+                    className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
+                    role="menuitem"
+                  >
+                    Iniciar Sesión
+                  </Link>
+                )}
+
+                {company && company.user !== "" && (
+                  <>
+                    <Link
+                      href="/verify-supplier"
+                      className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
+                      role="menuitem"
+                    >
+                      Datos de Facturación
+                    </Link>
+                    <Link
+                      href="/invoices"
+                      className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
+                      role="menuitem"
+                    >
+                      Facturas
+                    </Link>
+                    <Link
+                      href="/certificates"
+                      className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
+                      role="menuitem"
+                    >
+                      Certificados
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

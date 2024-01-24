@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 
 import validateRfc from "validate-rfc";
@@ -11,6 +11,7 @@ import {
 } from "../../schemas/VerifySupplier";
 
 import { getCatalogs } from "@/services/Catalog";
+import { useSelector } from "react-redux";
 
 export default function VerifySupplier() {
   const router = useRouter();
@@ -21,6 +22,8 @@ export default function VerifySupplier() {
   );
   const [open, setOpen] = useState(false);
   const [catalogRegime, setCatalogRegime] = useState([]);
+
+  const company = useSelector((state: any) => state.company);
 
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
@@ -53,6 +56,12 @@ export default function VerifySupplier() {
 
   useEffect(() => {
     handleGetCatalogs();
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!company.user) {
+      router.push("/login-supplier");
+    }
   }, []);
 
   return (

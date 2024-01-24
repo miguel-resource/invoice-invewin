@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import FormLoginSupplier from "@/components/Forms/LoginSupplier";
 
-
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
 });
@@ -16,7 +15,7 @@ export default function LoginSupplier() {
         data-sortable-id="form-stuff-1"
       >
         <div className="panel-body">
-            <FormLoginSupplier />
+          <FormLoginSupplier />
         </div>
       </div>
     </MainWrapper>

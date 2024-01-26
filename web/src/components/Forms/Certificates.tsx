@@ -22,7 +22,7 @@ export default function CertificatesForm() {
   });
 
   useLayoutEffect(() => {
-    if (!company.user) {
+    if (!company.rfc) {
       router.push("/login-supplier");
     }
   }, [company]);

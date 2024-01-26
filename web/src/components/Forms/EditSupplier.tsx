@@ -39,15 +39,15 @@ export default function VerifySupplier() {
 
   const handleGetCatalogs = async () => {
     const res = await getCatalogs();
-    console.log(res.data.cRegimenFiscal.c_RegimenFiscal);
+    
     setCatalogRegime(res.data.cRegimenFiscal.c_RegimenFiscal);
   };
 
   const formik = useFormik({
     validationSchema: VerifySupplierSchema,
     initialValues: VerifySupplierInitial,
-    validateOnChange: true,
-    validateOnMount: false,
+    // validateOnChange: true,
+    // validateOnMount: true,
     onSubmit: (values) => {
       console.log(values);
       handleInvoice();
@@ -56,10 +56,18 @@ export default function VerifySupplier() {
 
   useEffect(() => {
     handleGetCatalogs();
-  }, []);
+
+    if (company.rfc) {
+      formik.setFieldValue("rfc", company.rfc);
+      formik.setFieldValue("razonSocial", company.razonSocial);
+      formik.setFieldValue("codigoPostal", company.codigoPostal);
+      formik.setFieldValue("regimenFiscal", company.claveRegimenFiscal);
+
+    }
+  }, [company]);
 
   useLayoutEffect(() => {
-    if (!company.user) {
+    if (!company.rfc) {
       router.push("/login-supplier");
     }
   }, []);

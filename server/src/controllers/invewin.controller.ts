@@ -27,9 +27,33 @@ namespace InvewinController {
         body
       );
 
-      // console.log("data", data.access_token);
+      return data.access_token;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
 
-  
+  // TODO: Add custom Auth for company
+  export async function authCustom(
+    password: string,
+    userName: string,
+    clientSecret: string
+  ) {
+    try {
+      console.log("password", password);
+      console.log("userName", userName);
+      console.log("clientSecret", clientSecret);
+      const body = qs.stringify({
+        Grant_Type: process.env.INVEWIN_GRANT_TYPE,
+        Password: password,
+        Username: userName,
+        Client_Secret: clientSecret,
+      });
+
+      const { data } = await http.post(
+        process.env.INVEWIN_API_URL + "/auth",
+        body
+      );
 
       return data.access_token;
     } catch (error) {

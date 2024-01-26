@@ -10,6 +10,7 @@ import {
 } from "@/schemas/LoginSupplier";
 import { useDispatch } from "react-redux";
 import { setCompany } from "@/redux/companySlice";
+import { authCompany } from "@/services/Company";
 
 export default function LoginSupplier() {
   const router = useRouter();
@@ -33,14 +34,35 @@ export default function LoginSupplier() {
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    setMessage("Inicio de sesión correcto");
-    setType("success");
-    setOpen(true);
+    // setMessage("Inicio de sesión correcto");
+    // setType("success");
+    // setOpen(true);
 
-    setTimeout(() => {
-      dispatch(setCompany(formik.values));
-      router.push("/invoices");
-    }, 2000);
+    // setTimeout(() => {
+    //   dispatch(setCompany(formik.values));
+    //   router.push("/invoices");
+    // }, 2000);
+
+    authCompany(formik.values.user, formik.values.password)
+      .then((res) => {  
+        if (res.data) {
+          setMessage("Inicio de sesión correcto");
+          setType("success");
+          setOpen(true);
+
+          console.log(res.data);
+          setTimeout(() => {
+            dispatch(setCompany(res.data));
+            router.push("/invoices");
+          }, 2000);
+        }
+      }
+      ).catch((err) => {
+        setMessage("Usuario o contraseña incorrectos");
+        setType("error");
+        setOpen(true);
+      }
+      );
   };
 
   return (

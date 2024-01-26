@@ -14,7 +14,7 @@ export default function TableGrid({ data, columns }: Props) {
   const company = useSelector((state: any) => state.company);
 
   useLayoutEffect(() => {
-    if (company.user === "") {
+    if (!company.rfc) {
       router.push("/login-supplier");
     }
   }, [company]);

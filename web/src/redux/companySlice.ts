@@ -2,7 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     user: "",
-    password: "",
+    // password: "",
+    rfc: "",
+    razonSocial: "",
+    codigoPostal: "",
+    regimenFiscal: "",
+    claveRegimenFiscal: "",
 };
 
 const companySlice = createSlice({
@@ -11,11 +16,19 @@ const companySlice = createSlice({
     reducers: {
         setCompany: (state, action) => {
             state.user = action.payload.user;
-            state.password = action.payload.password;
+            state.rfc = action.payload.rfc;
+            state.razonSocial = action.payload.razonSocial;
+            state.codigoPostal = action.payload.codigoPostal;
+            state.regimenFiscal = action.payload.regimenFiscal;
+            state.claveRegimenFiscal = action.payload.claveRegimenFiscal;
         },
         resetCompany: (state) => {
             state.user = "";
-            state.password = "";
+            state.rfc = "";
+            state.razonSocial = "";
+            state.codigoPostal = "";
+            state.regimenFiscal = "";
+            state.claveRegimenFiscal = "";
         },
     },
 });

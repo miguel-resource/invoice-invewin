@@ -16,9 +16,9 @@ export const VerifySupplierSchema = Yup.object().shape({
     .min(13, "Muy corto!")
     .max(14, "Muy largo!"),
     razonSocial: Yup.string()
-    .required("Requerido")
-    .min(7, "Muy corto!")
-    .max(51, "Muy largo!"),
+    .required("Requerido"),
+    // .min(7, "Muy corto!")
+    // .max(51, "Muy largo!"),
     codigoPostal: Yup.number()
     .required("Requerido")
     .typeError("Debe ser un número")

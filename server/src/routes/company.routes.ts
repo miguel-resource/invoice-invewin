@@ -9,5 +9,6 @@ const path = "/company";
 
 
 router.post(path + "/auth", koaBody(), CompanyController.authCompany);
+router.post(path + "/update/:companyID", koaBody(), CompanyController.updateCompany);
 
 export const companyRouter = router;

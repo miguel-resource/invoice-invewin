@@ -12,6 +12,7 @@ import {
 
 import { getCatalogs } from "@/services/Catalog";
 import { useSelector } from "react-redux";
+import { updateCompany } from "@/services/Company";
 
 export default function VerifySupplier() {
   const router = useRouter();
@@ -28,13 +29,29 @@ export default function VerifySupplier() {
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    setMessage("Datos actualizados correctamente");
-    setType("success");
-    setOpen(true);
+    // setMessage("Datos actualizados correctamente");
+    // setType("success");
+    // setOpen(true);
 
-    setTimeout(() => {
-      router.push("/load-ticket");
-    }, 2000);
+    // setTimeout(() => {
+    //   router.push("/load-ticket");
+    // }, 2000);
+
+    updateCompany("5f9f9b1b1c9d440000a2d1a9", formik.values).then((res) => {
+      setMessage("Datos actualizados correctamente");
+      setType("success");
+      setOpen(true);
+
+      setTimeout(() => {
+        router.push("/load-ticket");
+      }, 2000);
+    }
+    ).catch((err) => {
+      setMessage("Error al actualizar los datos");
+      setType("error");
+      setOpen(true);
+    });
+      
   };
 
   const handleGetCatalogs = async () => {

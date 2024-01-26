@@ -43,6 +43,28 @@ namespace CompanyController {
 
     return data;
   }
+
+  export async function updateCompany(ctx: any) {
+    const accesToken = await InvewinController.auth(); // TODO: Make a question about if use this auth or the custom auth
+
+    const { companyID } = ctx.params;
+
+    const { company } = ctx.request.body;
+
+    await http
+      .put(process.env.INVEWIN_API_URL + "/empresas/" + companyID, company, {
+        headers: {
+          Authorization: `Bearer ${accesToken}`,
+        },
+      })
+      .catch((err) => {
+        
+        ctx.status = 400;
+      });
+
+    ctx.status = 200;
+    // ctx.body = data.data;
+  }
 }
 
 export default CompanyController;

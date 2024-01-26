@@ -15,3 +15,8 @@ export const authCompany = async (userName: string, password: string) => {
     password,
   });
 };
+
+
+export const updateCompany = async (id: string, data: any) => {
+  return http.post(path + `/update/${id}`, data);
+}

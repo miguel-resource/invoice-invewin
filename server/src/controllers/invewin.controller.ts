@@ -33,7 +33,6 @@ namespace InvewinController {
     }
   }
 
-  // TODO: Add custom Auth for company
   export async function authCustom(
     password: string,
     userName: string,

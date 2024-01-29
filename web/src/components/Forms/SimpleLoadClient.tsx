@@ -66,6 +66,7 @@ export default function LoadClientRFC() {
   const formik = useFormik({
     validationSchema: RFCSchema,
     initialValues: RFCInitial,
+    validateOnBlur: true,
     onSubmit: (values) => {
       handleInvoice();
     },
@@ -85,9 +86,6 @@ export default function LoadClientRFC() {
       "
       >
         <div className="mb-10px">
-          {/* <p>
-            <strong>Cliente:</strong> {sale.id}
-          </p> */}
           <label className="form-label mb-24">RFC</label>
           <div className="mt-5px">
             <input

@@ -17,10 +17,10 @@ import { setClient } from "@/redux/clientSlice";
 
 type Props = {
   onClose: () => void;
+  formik: any;
 };
 
-export default function EditClient({ onClose }: Props) {
-
+export default function EditClient({ onClose, formik }: Props) {
   const [message, setMessage] = useState("");
   const [type, setType] = useState<"success" | "error" | "warning" | "info">(
     "success"
@@ -28,44 +28,11 @@ export default function EditClient({ onClose }: Props) {
   const [open, setOpen] = useState(false);
   const [catalogRegime, setCatalogRegime] = useState([]);
 
-  const client = useSelector((state: any) => state.client);
+  // const client = useSelector((state: any) => state.client);
   const sale = useSelector((state: any) => state.sales);
 
   const dispatch = useDispatch();
 
-  const handleInvoice = () => {
-    // eslint-disable-next-line no-console
-
-    formik.values.usoCfdi && formik.values.usoCfdi !== '' ? formik.values.usoCfdi : formik.values.usoCfdi = client.usoCfdi;
-
-
-    console.log(formik.values);
-    const data = {
-      client: formik.values,
-      clientID: client.id,
-      companyID: sale.emisor.empresaId
-    };
-
-    putClientOnline(data)
-      .then((res) => {
-        console.log(res);
-        setMessage("Datos actualizados correctamente");
-        setType("success");
-        setOpen(true);
-
-        setTimeout(() => {
-          // router.push("/load-ticket");
-          dispatch(setClient(formik.values));
-          onClose();
-        }, 2000);
-      })
-      .catch((err) => {
-        console.log(err);
-        setMessage("Datos no actualizados, intente de nuevo");
-        setType("error");
-        setOpen(true);
-      });
-  };
 
   const handleGetCatalogs = async () => {
     const res = await getCatalogs();
@@ -73,23 +40,15 @@ export default function EditClient({ onClose }: Props) {
     setCatalogRegime(res.data.cRegimenFiscal.c_RegimenFiscal);
   };
 
-  const formik = useFormik({
-    validationSchema: VerifySupplierSchema,
-    initialValues: VerifySupplierInitial,
-    validateOnBlur: true,
-    validateOnChange: true,
-    onSubmit: (values) => {
-      handleInvoice();
-    },
-  });
+
 
   useEffect(() => {
     handleGetCatalogs();
-    formik.setFieldValue("rfc", client.rfc);
-    formik.setFieldValue("razonSocial", client.razonSocial);
-    formik.setFieldValue("codigoPostal", client.codigoPostal);
-    formik.setFieldValue("regimenFiscal", client.regimenFiscal);
-  }, []);
+    // formik.setFieldValue("rfc", sale[0].emisor.rfc);
+    formik.setFieldValue("razonSocial", formik.values.razonSocial);
+    formik.setFieldValue("codigoPostal", formik.values.codigoPostal);
+    formik.setFieldValue("regimenFiscal", formik.values.regimenFiscal);
+  }, [formik.values]);
 
   return (
     <form
@@ -97,45 +56,48 @@ export default function EditClient({ onClose }: Props) {
       onSubmit={formik.handleSubmit}
     >
       <div
-        className="row  w-full
+        className="  w-full
           bg-white
-          shadow-lg
-          mx-auto p-8
+          mx-auto mt-4
           rounded-xl
         "
       >
-        <div className="mb-10px">
-          <label className="form-label mb-24">RFC</label>
-          <div className="mt-5px">
-            <input
-              type="text"
-              className="form-control w-full"
-              placeholder="RFC"
-              id="rfc"
-              name="rfc"
-              onChange={formik.handleChange}
-              value={formik.values.rfc}
-              disabled={true}
-            />
+        <div className="mb-10px flex justify-between gap-3 ">
+          <div className="mb-10px w-full">
+            <label className="form-label mb-24">Razón Social</label>
+            <div className="mt-5px">
+              <input
+                type="text"
+                className="form-control mb-5px w-full"
+                placeholder="Razón Social"
+                value={formik.values.razonSocial}
+                onChange={formik.handleChange}
+                name="razonSocial"
+                id="razonSocial"
+              />
+            </div>
           </div>
 
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.rfc && formik.touched.rfc ? formik.errors.rfc : null}
-          </span>
-        </div>
+          <div className="mb-10px w-full">
+            <label className="form-label mb-24">Email</label>
+            <div className="mt-5px">
+              <input
+                type="email"
+                className="form-control w-full"
+                placeholder="email"
+                id="email"
+                name="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                disabled={true}
+              />
+            </div>
 
-        <div className="mb-10px">
-          <label className="form-label mb-24">Razón Social</label>
-          <div className="mt-5px">
-            <input
-              type="text"
-              className="form-control mb-5px w-full"
-              placeholder="Razón Social"
-              value={formik.values.razonSocial}
-              onChange={formik.handleChange}
-              name="razonSocial"
-              id="razonSocial"
-            />
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.rfc && formik.touched.rfc
+                ? formik.errors.rfc
+                : null}
+            </span>
           </div>
 
           <span className="text-xs text-red-500 italic" id="rfc-helper-text">
@@ -145,57 +107,84 @@ export default function EditClient({ onClose }: Props) {
           </span>
         </div>
 
-        <div className="mb-10px">
-          <label className="form-label mb-24 ">Código Postal</label>
-          <div className="mt-5px">
-            <input
-              type="text"
-              className="form-control mb-5px w-full"
-              placeholder="Código Postal"
-              value={formik.values.codigoPostal}
-              onChange={formik.handleChange}
-              name="codigoPostal"
-              id="codigoPostal"
-            />
+        <div className="mb-10px flex justify-between gap-4">
+          <div className="mb-10px w-1/3">
+            <label className="form-label mb-24 ">Código Postal</label>
+            <div className="mt-5px">
+              <input
+                type="text"
+                className="form-control mb-5px w-full"
+                placeholder="Código Postal"
+                value={formik.values.codigoPostal}
+                onChange={formik.handleChange}
+                name="codigoPostal"
+                id="codigoPostal"
+              />
+            </div>
+
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.codigoPostal && formik.touched.codigoPostal
+                ? formik.errors.codigoPostal
+                : null}
+            </span>
           </div>
 
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.codigoPostal && formik.touched.codigoPostal
-              ? formik.errors.codigoPostal
-              : null}
-          </span>
-        </div>
+          <div className="mb-10px w-1/3">
+            <label className="form-label mb-24">Régimen Fiscal</label>
+            <div className="mt-5px">
+              <select
+                value={formik.values.regimenFiscal}
+                className="form-control form-select mb-5px w-full"
+                name="regimenFiscal"
+                id="regimenFiscal"
+                onChange={formik.handleChange}
+              >
+                <option value="">Selecciona una opción</option>
+                {catalogRegime.map((item: any) =>
+                  item.fisisca === "Sí" ? (
+                    <option key={item.clave} value={item.clave}>
+                      {item.descripcion}
+                    </option>
+                  ) : null
+                )}
 
-        <div className="mb-10px">
-          <label className="form-label mb-24">Régimen Fiscal</label>
-          <div className="mt-5px">
-            <select
-              value={formik.values.regimenFiscal}
-              className="form-control mb-5px w-full"
-              name="regimenFiscal"
-              id="regimenFiscal"
-              onChange={formik.handleChange}
-            >
-              <option value="">Selecciona una opción</option>
-              {catalogRegime.map((item: any) =>
-                item.fisisca === "Sí" ? (
-                  <option key={item.clave} value={item.clave}>
-                    {item.descripcion}
-                  </option>
-                ) : null
-              )}
+                <p>{formik.values.regimenFiscal}</p>
+              </select>
+            </div>
 
-              <p>{formik.values.regimenFiscal}</p>
-            </select>
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.regimenFiscal}
+            </span>
           </div>
 
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.regimenFiscal}
-          </span>
+          <div className="mb-10px w-1/3">
+            <label className="form-label mb-24">Uso de CFDI</label>
+            <div className="mt-5px">
+              <select
+                value={formik.values.usoCfdi}
+                className="form-control form-select mb-5px w-full"
+                name="usoCfdi"
+                id="usoCfdi"
+                onChange={formik.handleChange}
+              >
+                {/* <option value="">Selecciona una opción</option>
+              {catalogUseCFDI.map((item: any) => (
+                <option key={item.clave} value={item.clave}>
+                  {item.descripcion}
+                </option>
+              ))} */}
+
+                {/* <p>{formik.values.regimenFiscal}</p> */}
+              </select>
+            </div>
+
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.usoCfdi}
+            </span>
+          </div>
         </div>
 
-        {/* button */}
-        <div className="flex justify-center mt-8">
+        {/* <div className="flex justify-center mt-8">
           <button
             disabled={!formik.isValid}
             type="submit"
@@ -203,7 +192,7 @@ export default function EditClient({ onClose }: Props) {
           >
             Actualizar datos
           </button>
-        </div>
+        </div> */}
       </div>
 
       <CommonAlert

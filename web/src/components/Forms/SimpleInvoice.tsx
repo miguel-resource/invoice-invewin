@@ -7,7 +7,6 @@ import { getSale } from "@/services/Invewin";
 import { useDispatch } from "react-redux";
 import { setSale } from "@/redux/saleSlice";
 
-
 export default function SimpleInvoice() {
   const router = useRouter();
   const [uuid, setUuid] = useState("");
@@ -18,29 +17,28 @@ export default function SimpleInvoice() {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
-
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    getSale(uuid).then((res) => {
-      if (res.data) {
-        setMessage("Ticket cargado correctamente");
-        setType("success");
+    getSale(uuid)
+      .then((res) => {
+        if (res.data) {
+          setMessage("Ticket cargado correctamente");
+          setType("success");
+          setOpen(true);
+
+          dispatch(setSale(res.data));
+
+          setTimeout(() => {
+            router.push("/stamp-bill");
+          }, 2000);
+        }
+      })
+      .catch((err) => {
+        setMessage("El ticket no existe, intente de nuevo");
+        setType("error");
         setOpen(true);
-
-        dispatch(setSale(res.data));
-
-        setTimeout(() => {
-          router.push("/load-client");
-        }, 2000);
-      }
-  
-    }).catch((err) => {
-      setMessage("El ticket no existe, intente de nuevo");
-      setType("error");
-      setOpen(true);
-    }
-    );
+      });
   };
 
   const handleUuidChange = (e: any) => {
@@ -84,7 +82,11 @@ export default function SimpleInvoice() {
       "
       >
         <div className="mb-10px">
-          <label className="form-label mb-24">Número de Ticket (UUID)</label>
+          <label className="form-label mb-24">Paso 1</label>
+          <p className="text-sm text-gray-500">
+            Ingresa tu folio de compra (UUID)
+          </p>
+
           <div className="mt-5px">
             <input
               type="text"
@@ -103,6 +105,36 @@ export default function SimpleInvoice() {
               {formik.errors.uuid}
             </span>
           </div>
+        </div>
+
+        <div className="mb-10px">
+          <label
+            className="form-label mb-24"
+            style={{ color: "#0C4A81", fontWeight: 700 }}
+          >
+            Paso 2
+          </label>
+          <p
+            className="text-sm text-gray-500"
+            style={{ color: "#0C4A81", fontWeight: 700 }}
+          >
+            Agrega tus datos de facturación
+          </p>
+        </div>
+
+        <div className="mb-10px">
+          <label
+            className="form-label mb-24"
+            style={{ color: "#0C4A81", fontWeight: 700 }}
+          >
+            Paso 3
+          </label>
+          <p
+            className="text-sm text-gray-500"
+            style={{ color: "#0C4A81", fontWeight: 700 }}
+          >
+            Confirme la operación y reciba la factura en su correo
+          </p>
         </div>
 
         {/* button */}

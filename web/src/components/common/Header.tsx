@@ -31,7 +31,7 @@ export default function Header() {
                     : ""
                 }`}
             >
-              <span className="d-none d-md-inline">Timbrar</span>
+              <span className="d-none d-md-inline">Facturar</span>
             </Link>
           </div>
 

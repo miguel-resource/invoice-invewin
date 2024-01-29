@@ -133,36 +133,26 @@ const initialState = {
       fechaModificacion: "2024-01-17T16:09:42.017Z",
       movimientoId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       empresaId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      
     },
-    
   ],
 };
 
 export const saleSlice = createSlice({
   name: "sale",
-  initialState,
+  initialState: [],
   reducers: {
-    setSale: (state, action) => {
-        const sale = action.payload;
-    
-        state.id = sale.id;
-        state.fecha = sale.fecha;
-        state.total = sale.total;
-        state.subtotal = sale.subtotal;
-        state.emisor.empresaId = sale.emisor.empresaId;
-        state.emisor.rfc = sale.emisor.rfc;
-        state.emisor.razonSocial = sale.emisor.razonSocial;
+    setSale: (state: any, action) => {
+      const sale = action.payload;
+
+      state.push(sale);
     },
-    removeSale: (state) => {
-        state = initialState;
+    removeSale: (state: any) => {
+      state = initialState;
     }
+
   },
 });
-
 
 export const { setSale, removeSale } = saleSlice.actions;
 export const selectSale = (state: any) => state.sale;
 export default saleSlice.reducer;
-
-

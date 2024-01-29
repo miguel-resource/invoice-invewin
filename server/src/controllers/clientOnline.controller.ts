@@ -34,9 +34,7 @@ namespace ClientOnlineController {
         return error.response.data;
       });
 
-  
     ctx.status = 200;
-
     if (data.data) {
       ctx.body = data.data;
     }

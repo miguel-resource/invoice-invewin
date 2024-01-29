@@ -15,6 +15,8 @@ namespace CompanyController {
 
     const user: User = await UserController.getUser(userNameRoute);
 
+
+    console.log("AUTH COMPANY, USER", user);
     await InvewinController.authCustom(password, userName, user.empresaId).then(
       (data) => {
         ctx.body = data;
@@ -45,11 +47,17 @@ namespace CompanyController {
   }
 
   export async function updateCompany(ctx: any) {
-    const accesToken = await InvewinController.auth(); // TODO: Make a question about if use this auth or the custom auth
-
+    const { company, userName, password } = ctx.request.body;
     const { companyID } = ctx.params;
 
-    const { company } = ctx.request.body;
+    console.log("UPDATE COMPANY, companyID", companyID);
+    const accesToken = await InvewinController.authCustom(
+      password,
+      userName,
+      companyID
+    );
+
+
 
     await http
       .put(process.env.INVEWIN_API_URL + "/empresas/" + companyID, company, {
@@ -57,12 +65,15 @@ namespace CompanyController {
           Authorization: `Bearer ${accesToken}`,
         },
       })
+      .then((response) => {
+        console.log("response", response);
+        ctx.status = response.status;
+      })
       .catch((err) => {
-        
-        ctx.status = 400;
+        ctx.status = err.response.status;
       });
 
-    ctx.status = 200;
+    // ctx.status = 200;
     // ctx.body = data.data;
   }
 }

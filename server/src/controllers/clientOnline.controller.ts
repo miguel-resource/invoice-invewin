@@ -63,7 +63,6 @@ namespace ClientOnlineController {
 
         return error.response.data;
       });
-    console.log("data", data);
 
     ctx.status = 200;
     ctx.body = data;

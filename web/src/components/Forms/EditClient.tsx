@@ -1,19 +1,8 @@
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 
-import validateRfc from "validate-rfc";
-
-import { useFormik } from "formik";
-import {
-  VerifySupplierInitial,
-  VerifySupplierSchema,
-} from "../../schemas/VerifySupplier";
-
 import { getCatalogs } from "@/services/Catalog";
 import { useDispatch, useSelector } from "react-redux";
-import { putClientOnline } from "@/services/ClientOnline";
-import { setClient } from "@/redux/clientSlice";
 
 type Props = {
   onClose: () => void;
@@ -30,12 +19,6 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
   const [catalogRegime, setCatalogRegime] = useState([]);
   const [catalogUseCFDI, setCatalogUseCFDI] = useState([]);
 
-  // const client = useSelector((state: any) => state.client);
-  const sale = useSelector((state: any) => state.sales);
-
-  const dispatch = useDispatch();
-
-
   const handleGetCatalogs = async () => {
     const res = await getCatalogs();
    
@@ -43,15 +26,13 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
     setCatalogUseCFDI(res.data.cUsoCFDI.c_UsoCFDI);
   };
 
-
-
   useEffect(() => {
     handleGetCatalogs();
-    // formik.setFieldValue("rfc", sale[0].emisor.rfc);
     formik.setFieldValue("razonSocial", formik.values.razonSocial);
     formik.setFieldValue("codigoPostal", formik.values.codigoPostal);
     formik.setFieldValue("regimenFiscal", formik.values.regimenFiscal);
   }, [formik.values]);
+
 
   return (
     <form

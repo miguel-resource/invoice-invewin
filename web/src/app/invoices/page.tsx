@@ -5,6 +5,9 @@ import dynamic from "next/dynamic";
 import { fa, faker, he } from "@faker-js/faker";
 import { Chip, Tooltip } from "@mui/material";
 import { render } from "react-dom";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getAllInvoices } from '../../services/Company';
 
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
@@ -31,6 +34,21 @@ export default function InvoicePage() {
   const data = faker.helpers.multiple(createRandomInvoice, {
     count: 10,
   });
+  // const [data, setData] = useState([]);
+
+  // const companyLogin = useSelector((state: any) => state.loginCompany);
+
+
+  // useEffect (() => {
+  //   handleGetInvoices();
+  // }, []);
+
+
+  // const handleGetInvoices = async () => {
+  //   const res = await getAllInvoices(companyLogin.email);
+  //   setData(res.data);
+  // }
+
 
   return (
     <MainWrapper>

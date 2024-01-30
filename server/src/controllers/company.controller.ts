@@ -49,13 +49,13 @@ namespace CompanyController {
     const userNameRoute = userName.replace("@", "%40");
     const user: User = await UserController.getUser(userNameRoute);
 
-    // const accesToken = await InvewinController.authCustom(
-    //   password,
-    //   userName,
-    //   user.empresaId
-    // );
+    const accessToken = await InvewinController.authCustom(
+      password,
+      userName,
+      user.empresaId
+    );
 
-    const accesToken = await InvewinController.auth();
+    // const accessToken = await InvewinController.auth();
 
     await http
       .put(
@@ -63,7 +63,7 @@ namespace CompanyController {
         company,
         {
           headers: {
-            Authorization: `Bearer ${accesToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       )
@@ -71,12 +71,15 @@ namespace CompanyController {
         ctx.status = response.status;
       })
       .catch((err) => {
+        console.log("ERROR", err.response.data);
         ctx.status = err.response.status;
       });
 
     // ctx.status = 200;
     // ctx.body = data.data;
   }
+
+
 }
 
 export default CompanyController;

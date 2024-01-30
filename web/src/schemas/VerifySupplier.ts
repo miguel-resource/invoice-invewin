@@ -11,10 +11,6 @@ export const VerifySupplierInitial = {
 };
 
 export const VerifySupplierSchema = Yup.object().shape({
-    rfc: Yup.string()
-    .required("Requerido")
-    .min(13, "Muy corto!")
-    .max(14, "Muy largo!"),
     razonSocial: Yup.string()
     .required("Requerido"),
     // .min(7, "Muy corto!")

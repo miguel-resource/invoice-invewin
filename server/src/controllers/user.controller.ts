@@ -13,8 +13,6 @@ namespace UserController {
         process.env.INVEWIN_API_URL + "/auth/" + userName
       );
 
-      console.log("data", data.data);
-
       return data.data;
     }
    

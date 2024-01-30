@@ -147,13 +147,26 @@ export const saleSlice = createSlice({
       state.push(sale);
       console.log(state);
     },
-    removeSale: (state: any) => {
-      state = initialState;
+    removeSpecificSale: (state: any, action) => {
+      const sale = action.payload;
+      console.log(sale.id);
+      state.filter((foundedSale: any) => foundedSale.id === sale.id);
+
+      console.log(state);
+
+      const index = state.findIndex((sale: any) => sale.id === sale.id);
+
+      state.splice(index, 1);
+      
+
+      
+
     }
+
 
   },
 });
 
-export const { setSale, removeSale } = saleSlice.actions;
+export const { setSale, removeSpecificSale } = saleSlice.actions;
 export const selectSale = (state: any) => state.sale;
 export default saleSlice.reducer;

@@ -1,7 +1,9 @@
 import { Chip, Tooltip } from "@mui/material";
 import TableGrid from "../common/Table";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { removeSpecificSale } from "@/redux/saleSlice";
+import { render } from "react-dom";
 
 type Props = {
   formik: any;
@@ -9,11 +11,11 @@ type Props = {
 
 export const TicketsGrid = ({ formik }: Props) => {
   const sales = useSelector((state: any) => state.sales);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log("SALES", sales);
   }, [sales]);
-  
 
   const handleUuidChange = (e: any) => {
     let value = e.target.value.replace(/-/g, "");
@@ -29,28 +31,29 @@ export const TicketsGrid = ({ formik }: Props) => {
     if (value.length > 23) {
       value = value.slice(0, 23) + "-" + value.slice(23);
     }
-   
+
     formik.setFieldValue("uuid", value);
-  }
+  };
 
   return (
     <section className="mb-10">
       <div>
-        <form className="flex items-center justify-between gap-3"
-        onSubmit={formik.handleSubmit}
+        <form
+          className="flex items-center justify-between gap-3"
+          onSubmit={formik.handleSubmit}
         >
           <label className="form-label mb-24">Folio</label>
           <input
-              type="text"
-              className="form-control mb-5px w-full"
-              placeholder="00000000-0000-0000-0000-000000000000"
-              id="uuid"
-              name="uuid"
-              onChange={(e) => {
-                handleUuidChange(e);
-              }}
-              value={formik.values.uuid}
-            />
+            type="text"
+            className="form-control mb-5px w-full"
+            placeholder="00000000-0000-0000-0000-000000000000"
+            id="uuid"
+            name="uuid"
+            onChange={(e) => {
+              handleUuidChange(e);
+            }}
+            value={formik.values.uuid}
+          />
 
           <button
             type="submit"
@@ -74,13 +77,24 @@ export const TicketsGrid = ({ formik }: Props) => {
                 headerAlign: "center",
               },
               {
-                field: "date",
+                field: "fecha",
                 headerName: "Fecha",
                 width: 190,
                 editable: false,
                 headerAlign: "center",
+                renderCell: (params: any) => {
+                  return (
+                    <div className="flex justify-center space-x-2 mx-auto items-center">
+                      <p className="text-slate-500 text-base font-medium items-center mb-0">
+                        {params.value}
+                         
+
+                      </p>
+                    </div>
+                  );
+                }
               },
-    
+
               {
                 field: "subtotal",
                 headerName: "Subtotal",
@@ -115,22 +129,24 @@ export const TicketsGrid = ({ formik }: Props) => {
                   );
                 },
               },
-
               {
                 field: "actions",
                 headerName: "Acciones",
                 width: 470,
                 headerAlign: "center",
-                renderCell: () => {
+                renderCell: (params: any) => {
                   return (
                     <div className="flex justify-center space-x-2 mx-auto">
                       <Tooltip title="Eliminar" arrow>
-                        <button className="p-1 w-11 rounded-full  bg-red-500">
+                        <button
+                          onClick={() => {
+                            dispatch(removeSpecificSale(params.row.id));
+                          }}
+                          className="p-1 w-11 rounded-full  bg-red-500"
+                        >
                           <i className="fa fa-trash text-slate-100"></i>
                         </button>
                       </Tooltip>
-
-  
                     </div>
                   );
                 },

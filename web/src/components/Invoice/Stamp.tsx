@@ -36,6 +36,8 @@ export const Stamp = () => {
   const [isCreatingClient, setIsCreatingClient] = useState(false);
   const [showSearchButton, setShowSearchButton] = useState(true);
 
+  const [isValidToStamp, setIsValidToStamp] = useState(false);
+
   useLayoutEffect(() => {
     if (sales.length === 0) {
       router.push("/load-ticket");
@@ -61,8 +63,10 @@ export const Stamp = () => {
             setOpen(true);
             setIsCreatingClient(true);
 
-            setIsSearchingRFC(false);
+
+
             setTimeout(() => {
+              setIsSearchingRFC(false);
               setShowForms(true);
             }, 2000);
           } else {
@@ -90,6 +94,7 @@ export const Stamp = () => {
                 res.data[0].codigoPostal
               );
               setIsSearchingRFC(false);
+              setIsValidToStamp(true);
             }, 2000);
           }
         })
@@ -104,35 +109,10 @@ export const Stamp = () => {
   const formikEditSupplier = useFormik({
     validationSchema: VerifySupplierSchema,
     initialValues: VerifySupplierInitial,
+    validateOnChange: true,
+    validateOnMount: false,
     onSubmit: (values) => {
       // eslint-disable-next-line no-console
-      // formikEditSupplier.values.usoCfdi &&
-      // formikEditSupplier.values.usoCfdi !== ""
-      //   ? formikEditSupplier.values.usoCfdi
-      //   : (formikEditSupplier.values.usoCfdi = client.usoCfdi);
-      // const data = {
-      //   client: formik.values,
-      //   clientID: client.id,
-      //   companyID: sale.emisor.empresaId,
-      // };
-      // putClientOnline(data)
-      //   .then((res) => {
-      //     console.log(res);
-      //     setMessage("Datos actualizados correctamente");
-      //     setType("success");
-      //     setOpen(true);
-      //     setTimeout(() => {
-      //       // router.push("/load-ticket");
-      //       dispatch(setClient(formik.values));
-      //       onClose();
-      //     }, 2000);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setMessage("Datos no actualizados, intente de nuevo");
-      //     setType("error");
-      //     setOpen(true);
-      //   });
     },
   });
 
@@ -211,7 +191,9 @@ export const Stamp = () => {
         <TicketsGrid formik={formikUUID} />
         <section className="flex flex-row items-center justify-center gap-36 w-full ">
           <TotalInvoice />
-          <ButtonStampInvoice />
+          <ButtonStampInvoice isValidToStamp={
+            isValidToStamp && formikEditSupplier.isValid && formikEditSupplier.dirty
+          } />
         </section>
       </div>
 

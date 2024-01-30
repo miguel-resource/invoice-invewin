@@ -9,7 +9,6 @@ const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
 });
 
 export default function StampBillPage() {
-  const [isCreatingClient, setIsCreatingClient] = useState(false);
 
   return (
     <MainWrapper>
@@ -18,7 +17,7 @@ export default function StampBillPage() {
         data-sortable-id="form-stuff-1"
       >
         <div className="panel-body">
-          <Stamp setIsCreatingClient={setIsCreatingClient} />
+          <Stamp  />
         </div>
       </div>
     </MainWrapper>

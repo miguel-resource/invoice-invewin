@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 export const LogginSupplierInitial = {
-  user: "",
+  email: "",
   password: "",
 };
 
@@ -10,8 +10,7 @@ export const LogginSupplierSchema = Yup.object().shape({
     .required("Requerido")
     .min(6, "Muy corto!")
     .max(50, "Muy largo!"),
-  user: Yup.string()
+  email: Yup.string()
     .required("Requerido")
-    .min(6, "Muy corto!")
-    .max(50, "Muy largo!")
+    .email("Correo inválido"),
 });

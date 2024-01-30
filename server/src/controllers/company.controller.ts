@@ -15,8 +15,6 @@ namespace CompanyController {
 
     const user: User = await UserController.getUser(userNameRoute);
 
-
-    console.log("AUTH COMPANY, USER", user);
     await InvewinController.authCustom(password, userName, user.empresaId).then(
       (data) => {
         ctx.body = data;
@@ -41,32 +39,35 @@ namespace CompanyController {
       }
     );
 
-    console.log("data", data.data);
-
     return data;
   }
 
   export async function updateCompany(ctx: any) {
     const { company, userName, password } = ctx.request.body;
-    const { companyID } = ctx.params;
+    console.log("REQUEST BODY", ctx.request.body);
 
-    console.log("UPDATE COMPANY, companyID", companyID);
-    const accesToken = await InvewinController.authCustom(
-      password,
-      userName,
-      companyID
-    );
+    const userNameRoute = userName.replace("@", "%40");
+    const user: User = await UserController.getUser(userNameRoute);
 
+    // const accesToken = await InvewinController.authCustom(
+    //   password,
+    //   userName,
+    //   user.empresaId
+    // );
 
+    const accesToken = await InvewinController.auth();
 
     await http
-      .put(process.env.INVEWIN_API_URL + "/empresas/" + companyID, company, {
-        headers: {
-          Authorization: `Bearer ${accesToken}`,
-        },
-      })
+      .put(
+        process.env.INVEWIN_API_URL + "/empresas/" + user.empresaId,
+        company,
+        {
+          headers: {
+            Authorization: `Bearer ${accesToken}`,
+          },
+        }
+      )
       .then((response) => {
-        console.log("response", response);
         ctx.status = response.status;
       })
       .catch((err) => {

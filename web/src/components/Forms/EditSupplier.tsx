@@ -25,19 +25,18 @@ export default function VerifySupplier() {
   const [catalogRegime, setCatalogRegime] = useState([]);
 
   const company = useSelector((state: any) => state.company);
+  const companyLogin = useSelector((state: any) => state.loginCompany);
 
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    // setMessage("Datos actualizados correctamente");
-    // setType("success");
-    // setOpen(true);
+    const data = {
+      company: formik.values,
+      userName: companyLogin.email,
+      password: companyLogin.password,
+    }
 
-    // setTimeout(() => {
-    //   router.push("/load-ticket");
-    // }, 2000);
-
-    updateCompany("5f9f9b1b1c9d440000a2d1a9", formik.values).then((res) => {
+    updateCompany(data).then((res) => {
       setMessage("Datos actualizados correctamente");
       setType("success");
       setOpen(true);
@@ -63,10 +62,7 @@ export default function VerifySupplier() {
   const formik = useFormik({
     validationSchema: VerifySupplierSchema,
     initialValues: VerifySupplierInitial,
-    // validateOnChange: true,
-    // validateOnMount: true,
     onSubmit: (values) => {
-      console.log(values);
       handleInvoice();
     },
   });
@@ -79,7 +75,7 @@ export default function VerifySupplier() {
       formik.setFieldValue("razonSocial", company.razonSocial);
       formik.setFieldValue("codigoPostal", company.codigoPostal);
       formik.setFieldValue("regimenFiscal", company.claveRegimenFiscal);
-
+      formik.setFieldValue("email", company.email);
     }
   }, [company]);
 
@@ -133,6 +129,29 @@ export default function VerifySupplier() {
           <span className="text-xs text-red-500 italic" id="rfc-helper-text">
             {formik.errors.razonSocial}
           </span>
+        </div>
+
+        <div className="mb-10px">
+          <label className="form-label mb-24">Email</label>
+          <div className="mt-5px">
+            <input
+              type="email"
+              className="form-control w-full"
+              placeholder="email"
+              id="email"
+              name="email"
+              onChange={formik.handleChange}
+              value={formik.values.email}
+            />
+          </div>
+
+          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+            {formik.errors.rfc && formik.touched.rfc
+              ? formik.errors.rfc
+              : null}
+          </span>
+        
+
         </div>
 
         <div className="mb-10px">

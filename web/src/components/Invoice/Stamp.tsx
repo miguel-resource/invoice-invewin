@@ -13,12 +13,9 @@ import {
   VerifySupplierInitial,
   VerifySupplierSchema,
 } from "@/schemas/VerifySupplier";
+import CommonAlert from "../common/Alert";
 
-type Props = {
-  setIsCreatingClient: (isCreatingClient: boolean) => void;
-};
-
-export const Stamp = ({ setIsCreatingClient }: Props) => {
+export const Stamp = () => {
   const sale = useSelector((state: any) => state.sales);
   const client = useSelector((state: any) => state.client);
   const router = useRouter();
@@ -27,6 +24,11 @@ export const Stamp = ({ setIsCreatingClient }: Props) => {
   const [showForms, setShowForms] = useState(false);
   const [isSearchingRFC, setIsSearchingRFC] = useState(false);
   const [message, setMessage] = useState("");
+  const [type, setType] = useState<"success" | "error" | "warning" | "info">(
+    "success"
+  );
+  const [open, setOpen] = useState(false);
+  const [isCreatingClient, setIsCreatingClient] = useState(false);
 
   useLayoutEffect(() => {
     if (sale.length === 0) {
@@ -41,50 +43,51 @@ export const Stamp = ({ setIsCreatingClient }: Props) => {
       // eslint-disable-next-line no-console
       setShowForms(true);
       setIsSearchingRFC(true);
-      getClientOnline(sale[0].emisor.empresaId
-        , formikSearchRFC.values.rfc)
+      getClientOnline(sale[0].emisor.empresaId, formikSearchRFC.values.rfc)
         .then((res) => {
-
-
           if (
             res.data.codigoEstatus === 404 ||
             res.data.mensaje === "No existe la empresa indicada"
           ) {
             setMessage("RFC no encontrado, debes ingresar tus datos fiscales");
-            // setType("error");
-            // setOpen(true);
+            setType("error");
+            setOpen(true);
+            setIsCreatingClient(true);
 
-
+            setIsSearchingRFC(false);
             setTimeout(() => {
               setShowForms(true);
-              setIsCreatingClient(true);
-
             }, 2000);
           } else {
             setMessage("RFC cargado correctamente");
-            // setType("success");
-            // setOpen(true);
+            setType("success");
+            setOpen(true);
 
             dispatch(setClient(res.data[0]));
 
-
             setTimeout(() => {
-
               setShowForms(true);
-              formikEditSupplier.setFieldValue("razonSocial", res.data[0].razonSocial);
+              formikEditSupplier.setFieldValue(
+                "razonSocial",
+                res.data[0].razonSocial
+              );
               formikEditSupplier.setFieldValue("usoCfdi", res.data[0].usoCfdi);
-              formikEditSupplier.setFieldValue("regimenFiscal", res.data[0].regimenFiscal);
-              formikEditSupplier.setFieldValue("codigoPostal", res.data[0].codigoPostal);
-
+              formikEditSupplier.setFieldValue(
+                "regimenFiscal",
+                res.data[0].regimenFiscal
+              );
+              formikEditSupplier.setFieldValue(
+                "codigoPostal",
+                res.data[0].codigoPostal
+              );
               setIsSearchingRFC(false);
             }, 2000);
           }
-
         })
         .catch((err) => {
           setMessage("RFC no encontrado");
-          // setType("error");
-          // setOpen(true);
+          setType("error");
+          setOpen(true);
         });
     },
   });
@@ -94,25 +97,21 @@ export const Stamp = ({ setIsCreatingClient }: Props) => {
     initialValues: VerifySupplierInitial,
     onSubmit: (values) => {
       // eslint-disable-next-line no-console
-
       // formikEditSupplier.values.usoCfdi &&
       // formikEditSupplier.values.usoCfdi !== ""
       //   ? formikEditSupplier.values.usoCfdi
       //   : (formikEditSupplier.values.usoCfdi = client.usoCfdi);
-
       // const data = {
       //   client: formik.values,
       //   clientID: client.id,
       //   companyID: sale.emisor.empresaId,
       // };
-
       // putClientOnline(data)
       //   .then((res) => {
       //     console.log(res);
       //     setMessage("Datos actualizados correctamente");
       //     setType("success");
       //     setOpen(true);
-
       //     setTimeout(() => {
       //       // router.push("/load-ticket");
       //       dispatch(setClient(formik.values));
@@ -131,7 +130,6 @@ export const Stamp = ({ setIsCreatingClient }: Props) => {
   return (
     <div
       className="flex items-center justify-center h-full"
-      //   onSubmit={formik.handleSubmit}
     >
       <div
         className="row mb-15px w-10/12 
@@ -141,24 +139,33 @@ export const Stamp = ({ setIsCreatingClient }: Props) => {
           rounded-xl
         "
       >
-        <SearchRFC setShowForms={setShowForms} formik={formikSearchRFC} isSearchingRFC={isSearchingRFC} />
+        <SearchRFC
+          setShowForms={setShowForms}
+          formik={formikSearchRFC}
+          isSearchingRFC={isSearchingRFC}
+        />
 
         {showForms && (
           <>
-           
-
             <PaymentMethod />
             <EditClient
               formik={formikEditSupplier}
               onClose={function (): void {
                 throw new Error("Function not implemented.");
               }}
+              isCreatingClient={isCreatingClient}
             />
           </>
         )}
         <TicketsGrid />
       </div>
+
+      <CommonAlert
+        message={message}
+        type={type}
+        onClose={() => setOpen(false)}
+        open={open}
+      />
     </div>
   );
 };
-

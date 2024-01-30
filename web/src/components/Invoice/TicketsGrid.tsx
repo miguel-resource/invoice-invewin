@@ -43,29 +43,16 @@ export const TicketsGrid = () => {
                 editable: false,
                 headerAlign: "center",
               },
-              // {
-              //   // field is emisor.rfc, how to access it?
-              //   field: "emisor",
-              //   headerName: "Razón Social",
-              //   width: 200,
-              //   editable: false,
-              //   headerAlign: "center",
-              //   renderCell: (params: any) => {
-              //     return (
-              //       <div
-              //         className="flex justify-center space-x-2 mx-auto"
-              //         style={{ width: "100%" }}
-              //       >
-              //         <Chip
-              //           label={params.value.razonSocial}
-              //           className=" text-slate-100"
-              //           variant="outlined"
-              //           color="success"
-              //         />
-              //       </div>
-              //     );
-              //   },
-              // },
+              {
+                field: "date",
+                headerName: "Fecha",
+                width: 190,
+                editable: false,
+                headerAlign: "center",
+
+              },
+              
+      
               {
                 field: "subtotal",
                 headerName: "Subtotal",
@@ -100,32 +87,7 @@ export const TicketsGrid = () => {
                   );
                 },
               },
-              // {
-              //   field: "methodPayment",
-              //   headerName: "Método de Pago",
-              //   width: 130,
-              //   editable: false,
-              //   headerAlign: "center",
-              //   renderCell: (params: any) => {
-              //     return (
-              //       <Chip
-              //         label={params.value}
-              //         icon={
-              //           <i
-              //             className={`fa ${
-              //               params.value === "Tarjeta de Crédito"
-              //                 ? "fa-credit-card"
-              //                 : "fa-money-bill"
-              //             }`}
-              //           ></i>
-              //         }
-              //         className=" text-slate-100 px-2"
-              //         variant="outlined"
-              //         color="success"
-              //       />
-              //     );
-              //   },
-              // },
+
               {
                 field: "actions",
                 headerName: "Acciones",

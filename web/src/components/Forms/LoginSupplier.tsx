@@ -11,6 +11,7 @@ import {
 import { useDispatch } from "react-redux";
 import { setCompany } from "@/redux/companySlice";
 import { authCompany } from "@/services/Company";
+import { setLoginCompany } from "@/redux/loginCompanySlice";
 
 export default function LoginSupplier() {
   const router = useRouter();
@@ -34,16 +35,9 @@ export default function LoginSupplier() {
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
-    // setMessage("Inicio de sesión correcto");
-    // setType("success");
-    // setOpen(true);
+    dispatch(setLoginCompany(formik.values));
 
-    // setTimeout(() => {
-    //   dispatch(setCompany(formik.values));
-    //   router.push("/invoices");
-    // }, 2000);
-
-    authCompany(formik.values.user, formik.values.password)
+    authCompany(formik.values.email, formik.values.password)
       .then((res) => {  
         if (res.data) {
           setMessage("Inicio de sesión correcto");
@@ -85,10 +79,10 @@ export default function LoginSupplier() {
               type="text"
               className="form-control mb-5px w-full"
               placeholder="Usuario"
-              value={formik.values.user}
+              value={formik.values.email}
               onChange={formik.handleChange}
-              name="user"
-              id="user"
+              name="email"
+              id="email"
             />
             {/* <ErrorMessage name="user"/> */}
 
@@ -96,7 +90,7 @@ export default function LoginSupplier() {
               className="text-red-500 text-xs italic"
               style={{ display: "block" }}
             >
-              {formik.errors.user}
+              {formik.errors.email}
             </span>
           </div>
         </div>

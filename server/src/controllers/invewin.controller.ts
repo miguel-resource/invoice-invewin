@@ -39,9 +39,6 @@ namespace InvewinController {
     clientSecret: string
   ) {
     try {
-      console.log("password", password);
-      console.log("userName", userName);
-      console.log("clientSecret", clientSecret);
       const body = qs.stringify({
         Grant_Type: process.env.INVEWIN_GRANT_TYPE,
         Password: password,

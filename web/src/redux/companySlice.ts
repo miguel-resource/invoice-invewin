@@ -8,6 +8,7 @@ const initialState = {
     codigoPostal: "",
     regimenFiscal: "",
     claveRegimenFiscal: "",
+    email: "",
 };
 
 const companySlice = createSlice({
@@ -21,6 +22,7 @@ const companySlice = createSlice({
             state.codigoPostal = action.payload.codigoPostal;
             state.regimenFiscal = action.payload.regimenFiscal;
             state.claveRegimenFiscal = action.payload.claveRegimenFiscal;
+            state.email = action.payload.email;
         },
         resetCompany: (state) => {
             state.user = "";
@@ -29,6 +31,7 @@ const companySlice = createSlice({
             state.codigoPostal = "";
             state.regimenFiscal = "";
             state.claveRegimenFiscal = "";
+            state.email = "";
         },
     },
 });

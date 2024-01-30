@@ -27,7 +27,6 @@ namespace ClientOnlineController {
         }
       )
       .catch((error) => {
-        console.log("error", error.response.data);
         ctx.status = 400;
         ctx.body = error.response.data;
 

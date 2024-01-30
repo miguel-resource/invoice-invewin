@@ -18,15 +18,17 @@ import { setClient } from "@/redux/clientSlice";
 type Props = {
   onClose: () => void;
   formik: any;
+  isCreatingClient: boolean;
 };
 
-export default function EditClient({ onClose, formik }: Props) {
+export default function EditClient({ onClose, formik, isCreatingClient }: Props) {
   const [message, setMessage] = useState("");
   const [type, setType] = useState<"success" | "error" | "warning" | "info">(
     "success"
   );
   const [open, setOpen] = useState(false);
   const [catalogRegime, setCatalogRegime] = useState([]);
+  const [catalogUseCFDI, setCatalogUseCFDI] = useState([]);
 
   // const client = useSelector((state: any) => state.client);
   const sale = useSelector((state: any) => state.sales);
@@ -36,8 +38,9 @@ export default function EditClient({ onClose, formik }: Props) {
 
   const handleGetCatalogs = async () => {
     const res = await getCatalogs();
-    console.log(res.data.cRegimenFiscal.c_RegimenFiscal);
+   
     setCatalogRegime(res.data.cRegimenFiscal.c_RegimenFiscal);
+    setCatalogUseCFDI(res.data.cUsoCFDI.c_UsoCFDI);
   };
 
 
@@ -52,7 +55,7 @@ export default function EditClient({ onClose, formik }: Props) {
 
   return (
     <form
-      className="flex items-center justify-center h-full"
+      className="flex items-center justify-center h-full border-b-2 border-slate-200 mb-8"
       onSubmit={formik.handleSubmit}
     >
       <div
@@ -89,7 +92,7 @@ export default function EditClient({ onClose, formik }: Props) {
                 name="email"
                 onChange={formik.handleChange}
                 value={formik.values.email}
-                disabled={true}
+                
               />
             </div>
 
@@ -167,12 +170,12 @@ export default function EditClient({ onClose, formik }: Props) {
                 id="usoCfdi"
                 onChange={formik.handleChange}
               >
-                {/* <option value="">Selecciona una opción</option>
+                <option value="">Selecciona una opción</option>
               {catalogUseCFDI.map((item: any) => (
                 <option key={item.clave} value={item.clave}>
                   {item.descripcion}
                 </option>
-              ))} */}
+              ))}
 
                 {/* <p>{formik.values.regimenFiscal}</p> */}
               </select>

@@ -1,26 +1,56 @@
 import { Chip, Tooltip } from "@mui/material";
 import TableGrid from "../common/Table";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
-import { render } from "react-dom";
+import { useEffect, useState } from "react";
 
-export const TicketsGrid = () => {
+type Props = {
+  formik: any;
+};
+
+export const TicketsGrid = ({ formik }: Props) => {
   const sales = useSelector((state: any) => state.sales);
 
   useEffect(() => {
     console.log("SALES", sales);
   }, [sales]);
+  
+
+  const handleUuidChange = (e: any) => {
+    let value = e.target.value.replace(/-/g, "");
+    if (value.length > 8) {
+      value = value.slice(0, 8) + "-" + value.slice(8);
+    }
+    if (value.length > 13) {
+      value = value.slice(0, 13) + "-" + value.slice(13);
+    }
+    if (value.length > 18) {
+      value = value.slice(0, 18) + "-" + value.slice(18);
+    }
+    if (value.length > 23) {
+      value = value.slice(0, 23) + "-" + value.slice(23);
+    }
+   
+    formik.setFieldValue("uuid", value);
+  }
 
   return (
     <section className="mb-10">
       <div>
-        <form className="flex items-center justify-between gap-3" action="">
+        <form className="flex items-center justify-between gap-3"
+        onSubmit={formik.handleSubmit}
+        >
           <label className="form-label mb-24">Folio</label>
           <input
-            type="text"
-            placeholder="00000000-0000-0000-0000-000000000000"
-            className="form-control w-full"
-          />
+              type="text"
+              className="form-control mb-5px w-full"
+              placeholder="00000000-0000-0000-0000-000000000000"
+              id="uuid"
+              name="uuid"
+              onChange={(e) => {
+                handleUuidChange(e);
+              }}
+              value={formik.values.uuid}
+            />
 
           <button
             type="submit"
@@ -49,10 +79,8 @@ export const TicketsGrid = () => {
                 width: 190,
                 editable: false,
                 headerAlign: "center",
-
               },
-              
-      
+    
               {
                 field: "subtotal",
                 headerName: "Subtotal",

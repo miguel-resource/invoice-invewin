@@ -14,9 +14,14 @@ import {
   VerifySupplierSchema,
 } from "@/schemas/VerifySupplier";
 import CommonAlert from "../common/Alert";
+import { TotalInvoice } from "./TotalInvoice";
+import { ButtonStampInvoice } from "./ButtonStampInvoice";
+import { UUIDInitial, UUIDSchema } from "@/schemas/UUID";
+import { getSale } from "@/services/Invewin";
+import { setSale } from "@/redux/saleSlice";
 
 export const Stamp = () => {
-  const sale = useSelector((state: any) => state.sales);
+  const sales = useSelector((state: any) => state.sales);
   const client = useSelector((state: any) => state.client);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -29,21 +34,23 @@ export const Stamp = () => {
   );
   const [open, setOpen] = useState(false);
   const [isCreatingClient, setIsCreatingClient] = useState(false);
+  const [showSearchButton, setShowSearchButton] = useState(true);
 
   useLayoutEffect(() => {
-    if (sale.length === 0) {
+    if (sales.length === 0) {
       router.push("/load-ticket");
     }
-  }, [sale]);
+  }, [sales]);
 
   const formikSearchRFC = useFormik({
     validationSchema: RFCSchema,
     initialValues: RFCInitial,
+    validateOnChange: true,
     onSubmit: (values) => {
       // eslint-disable-next-line no-console
       setShowForms(true);
       setIsSearchingRFC(true);
-      getClientOnline(sale[0].emisor.empresaId, formikSearchRFC.values.rfc)
+      getClientOnline(sales[0].emisor.empresaId, formikSearchRFC.values.rfc)
         .then((res) => {
           if (
             res.data.codigoEstatus === 404 ||
@@ -62,6 +69,8 @@ export const Stamp = () => {
             setMessage("RFC cargado correctamente");
             setType("success");
             setOpen(true);
+            setIsCreatingClient(false);
+            setShowSearchButton(false);
 
             dispatch(setClient(res.data[0]));
 
@@ -127,22 +136,64 @@ export const Stamp = () => {
     },
   });
 
+  const formikUUID = useFormik({
+    validationSchema: UUIDSchema,
+    initialValues: UUIDInitial,
+    validateOnChange: true,
+    validateOnMount: false,
+    onSubmit: (values) => {
+      // eslint-disable-next-line no-console
+
+      getSale(formikUUID.values.uuid)
+        .then((res) => {
+          if (res.data) {
+            setMessage("Ticket cargado correctamente");
+            setType("success");
+            setOpen(true);
+
+            const searchSale = sales.find(
+              (sale: any) => sale.id === formikUUID.values.uuid
+            );
+
+            if (searchSale) {
+              setMessage("El ticket ya fue cargado");
+              setType("error");
+              setOpen(true);
+              return;
+            }
+
+            dispatch(setSale(res.data));
+
+            formikUUID.resetForm();
+          }
+        })
+        .catch((err) => {
+          setMessage("El ticket no existe, intente de nuevo");
+          setType("error");
+          setOpen(true);
+        });
+    },
+  });
+
+  useLayoutEffect(() => {
+    if (sales.length === 0) {
+      router.push("/load-ticket");
+    }
+  }, [sales]);
+
   return (
-    <div
-      className="flex items-center justify-center h-full"
-    >
+    <div className="flex items-center justify-center w-full h-full">
       <div
         className="row mb-15px w-10/12 
           bg-white
           shadow-lg
           mx-auto p-8
-          rounded-xl
-        "
+          rounded-xl"
       >
         <SearchRFC
-          setShowForms={setShowForms}
           formik={formikSearchRFC}
           isSearchingRFC={isSearchingRFC}
+          showSearchButton={showSearchButton}
         />
 
         {showForms && (
@@ -157,7 +208,11 @@ export const Stamp = () => {
             />
           </>
         )}
-        <TicketsGrid />
+        <TicketsGrid formik={formikUUID} />
+        <section className="flex flex-row items-center justify-center gap-36 w-full ">
+          <TotalInvoice />
+          <ButtonStampInvoice />
+        </section>
       </div>
 
       <CommonAlert

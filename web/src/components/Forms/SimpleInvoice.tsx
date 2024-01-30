@@ -1,10 +1,10 @@
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 import { useFormik } from "formik";
 import { UUIDInitial, UUIDSchema } from "@/schemas/UUID";
 import { getSale } from "@/services/Invewin";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSale } from "@/redux/saleSlice";
 
 export default function SimpleInvoice() {
@@ -16,6 +16,8 @@ export default function SimpleInvoice() {
   );
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+
+  const sales = useSelector((state: any) => state.sales);
 
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
@@ -67,6 +69,12 @@ export default function SimpleInvoice() {
       handleInvoice();
     },
   });
+
+  useLayoutEffect(() => {
+    if (sales.length > 0) {
+      router.push("/stamp-bill");
+    }
+  }, [sales]);
 
   return (
     <form

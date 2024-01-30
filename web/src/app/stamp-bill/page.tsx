@@ -13,11 +13,11 @@ export default function StampBillPage() {
   return (
     <MainWrapper>
       <div
-        className="panel panel-inverse h-full"
+        className="panel panel-inverse min-h-full max-h-fit"
         data-sortable-id="form-stuff-1"
       >
         <div className="panel-body">
-          <Stamp  />
+          <Stamp/>
         </div>
       </div>
     </MainWrapper>

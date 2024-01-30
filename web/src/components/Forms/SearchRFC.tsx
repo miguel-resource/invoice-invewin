@@ -1,18 +1,18 @@
 import { FormikProps } from "formik";
-import { RFCInitial } from '../../schemas/RFC';
+import { RFCInitial } from "../../schemas/RFC";
 import { CircularProgress } from "@mui/material";
 
 type Props = {
-  setShowForms: (showForms: boolean) => void;
   formik: FormikProps<typeof RFCInitial>;
   isSearchingRFC: boolean;
+  showSearchButton: boolean;
 };
 
-export const SearchRFC = ({ setShowForms, formik, isSearchingRFC }: Props) => {
-
-
-  
-
+export const SearchRFC = ({
+  formik,
+  isSearchingRFC,
+  showSearchButton,
+}: Props) => {
   return (
     <form
       className="flex  justify-center h-full gap-2 flex-col mb-10 border-b-2 pb-4"
@@ -34,30 +34,28 @@ export const SearchRFC = ({ setShowForms, formik, isSearchingRFC }: Props) => {
           value={formik.values.rfc}
           onChange={formik.handleChange}
         />
-        <button
-          type="submit"
-          className="w-1/12 
-            bg-slate-800 
-            hover:bg-slate-700
-            text-slate-100 
-            font-bold 
-            rounded-lg
-            py-2 
-            px-4 
-            focus:outline-none 
-            focus:shadow-outline h-9 flex items-center justify-center"
-        >
-          {/* <i className="fa fa-search"></i> */}
 
-          {/* <CircularProgress size={20} color="inherit" /> */}
-
-          {isSearchingRFC ? (
-            <CircularProgress size={20} color="inherit" />
-          ) : (
-            <i className="fa fa-search"></i>
-          )}
-
-        </button>
+        {showSearchButton && (
+          <button
+            type="submit"
+            className="w-1/12 
+              bg-slate-800 
+              hover:bg-slate-700
+              text-slate-100 
+              font-bold 
+              rounded-lg
+              py-2 
+              px-4 
+              focus:outline-none 
+              focus:shadow-outline h-9 flex items-center justify-center"
+          >
+            {isSearchingRFC ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <i className="fa fa-search"></i>
+            )}
+          </button>
+        )}
       </div>
 
       {/* <ErrorMessage name="user"/> */}

@@ -31,6 +31,8 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
     formik.setFieldValue("razonSocial", formik.values.razonSocial);
     formik.setFieldValue("codigoPostal", formik.values.codigoPostal);
     formik.setFieldValue("regimenFiscal", formik.values.regimenFiscal);
+    formik.setFieldValue("usoCfdi", formik.values.usoCfdi);
+    formik.setFieldValue("email", formik.values.email);
   }, [formik.values]);
 
 
@@ -52,12 +54,16 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
             <div className="mt-5px">
               <input
                 type="text"
-                className="form-control mb-5px w-full"
                 placeholder="Razón Social"
                 value={formik.values.razonSocial}
                 onChange={formik.handleChange}
                 name="razonSocial"
                 id="razonSocial"
+                className={
+                  formik.errors.razonSocial
+                    ? "form-control mb-5px w-full border-2 is-invalid"
+                    : "form-control mb-5px w-full"
+                }
               />
             </div>
           </div>
@@ -67,28 +73,21 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
             <div className="mt-5px">
               <input
                 type="email"
-                className="form-control w-full"
+                className={
+                  formik.errors.email
+                    ? "form-control mb-5px w-full border-2 is-invalid"
+                    : "form-control mb-5px w-full"
+                }
                 placeholder="email"
                 id="email"
                 name="email"
                 onChange={formik.handleChange}
                 value={formik.values.email}
-                
               />
             </div>
-
-            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-              {formik.errors.rfc && formik.touched.rfc
-                ? formik.errors.rfc
-                : null}
-            </span>
           </div>
 
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.razonSocial && formik.touched.razonSocial
-              ? formik.errors.razonSocial
-              : null}
-          </span>
+    
         </div>
 
         <div className="mb-10px flex justify-between gap-4">
@@ -97,7 +96,11 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
             <div className="mt-5px">
               <input
                 type="text"
-                className="form-control mb-5px w-full"
+                className={
+                  formik.errors.codigoPostal
+                    ? "form-control mb-5px w-full border-2 is-invalid"
+                    : "form-control mb-5px w-full"
+                }
                 placeholder="Código Postal"
                 value={formik.values.codigoPostal}
                 onChange={formik.handleChange}
@@ -105,12 +108,6 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
                 id="codigoPostal"
               />
             </div>
-
-            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-              {formik.errors.codigoPostal && formik.touched.codigoPostal
-                ? formik.errors.codigoPostal
-                : null}
-            </span>
           </div>
 
           <div className="mb-10px w-1/3">
@@ -118,7 +115,12 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
             <div className="mt-5px">
               <select
                 value={formik.values.regimenFiscal}
-                className="form-control form-select mb-5px w-full"
+                // className="form-control form-select mb-5px w-full"
+                className={
+                  formik.errors.regimenFiscal
+                    ? "form-control form-select mb-5px w-full border-2 is-invalid"
+                    : "form-control form-select mb-5px w-full"
+                }
                 name="regimenFiscal"
                 id="regimenFiscal"
                 onChange={formik.handleChange}
@@ -132,13 +134,9 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
                   ) : null
                 )}
 
-                <p>{formik.values.regimenFiscal}</p>
               </select>
             </div>
 
-            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-              {formik.errors.regimenFiscal}
-            </span>
           </div>
 
           <div className="mb-10px w-1/3">
@@ -146,7 +144,11 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
             <div className="mt-5px">
               <select
                 value={formik.values.usoCfdi}
-                className="form-control form-select mb-5px w-full"
+                className={
+                  formik.errors.usoCfdi
+                    ? "form-control form-select mb-5px w-full border-2 is-invalid"
+                    : "form-control form-select mb-5px w-full"
+                }
                 name="usoCfdi"
                 id="usoCfdi"
                 onChange={formik.handleChange}
@@ -158,13 +160,10 @@ export default function EditClient({ onClose, formik, isCreatingClient }: Props)
                 </option>
               ))}
 
-                {/* <p>{formik.values.regimenFiscal}</p> */}
               </select>
             </div>
 
-            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-              {formik.errors.usoCfdi}
-            </span>
+  
           </div>
         </div>
 

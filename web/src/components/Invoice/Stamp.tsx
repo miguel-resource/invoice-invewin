@@ -38,12 +38,6 @@ export const Stamp = () => {
 
   const [isValidToStamp, setIsValidToStamp] = useState(false);
 
-  useLayoutEffect(() => {
-    if (sales.length === 0) {
-      router.push("/load-ticket");
-    }
-  }, [sales]);
-
   const formikSearchRFC = useFormik({
     validationSchema: RFCSchema,
     initialValues: RFCInitial,
@@ -70,7 +64,7 @@ export const Stamp = () => {
               setShowForms(true);
             }, 2000);
           } else {
-            setMessage("RFC cargado correctamente");
+            setMessage("RFC cargado correctamente, verifica tus datos fiscales antes de timbrar");
             setType("success");
             setOpen(true);
             setIsCreatingClient(false);
@@ -93,6 +87,7 @@ export const Stamp = () => {
                 "codigoPostal",
                 res.data[0].codigoPostal
               );
+              formikEditSupplier.setFieldValue("email", res.data[0].email);
               setIsSearchingRFC(false);
               setIsValidToStamp(true);
             }, 2000);
@@ -142,6 +137,13 @@ export const Stamp = () => {
               return;
             }
 
+            if (res.data.emisor.empresaId !== sales[0].emisor.empresaId) {
+              setMessage("El ticket no pertenece a la empresa");
+              setType("error");
+              setOpen(true);
+              return;
+            }
+
             dispatch(setSale(res.data));
 
             formikUUID.resetForm();
@@ -154,12 +156,6 @@ export const Stamp = () => {
         });
     },
   });
-
-  useLayoutEffect(() => {
-    if (sales.length === 0) {
-      router.push("/load-ticket");
-    }
-  }, [sales]);
 
   return (
     <div className="flex items-center justify-center w-full h-full">
@@ -192,7 +188,7 @@ export const Stamp = () => {
         <section className="flex flex-row items-center justify-center gap-36 w-full ">
           <TotalInvoice />
           <ButtonStampInvoice isValidToStamp={
-            isValidToStamp && formikEditSupplier.isValid && formikEditSupplier.dirty
+            isValidToStamp && formikEditSupplier.isValid && formikEditSupplier.dirty && sales.length > 0
           } />
         </section>
       </div>

@@ -66,93 +66,106 @@ export const TicketsGrid = ({ formik }: Props) => {
         </form>
 
         <div className="mt-10">
-          <TableGrid
-            data={sales}
-            columns={[
-              {
-                field: "id",
-                headerName: "Folio",
-                width: 300,
-                editable: false,
-                headerAlign: "center",
-              },
-              {
-                field: "fecha",
-                headerName: "Fecha",
-                width: 190,
-                editable: false,
-                headerAlign: "center",
-                renderCell: (params: any) => {
-                  return (
-                    <div className="flex justify-center space-x-2 mx-auto items-center">
-                      <p className="text-slate-500 text-base font-medium items-center mb-0">
-                        {params.value}
-                         
+          {sales.length !== 0 ? (
+            <TableGrid
+              data={sales}
+              columns={[
+                {
+                  field: "id",
+                  headerName: "Folio",
+                  width: 300,
+                  editable: false,
+                  headerAlign: "center",
+                },
+                {
+                  field: "fecha",
+                  headerName: "Fecha",
+                  width: 190,
+                  editable: false,
+                  headerAlign: "center",
+                  renderCell: (params: any) => {
+                    return (
+                      <div className="flex justify-center space-x-2 mx-auto items-center">
+                        <p className="text-slate-500 text-base font-medium items-center mb-0">
+                          {new Date(params.value)
+                            .toISOString()
+                            .split("T")[0]
+                            .split("-")
+                            .reverse()
+                            .join("/")}
+                        </p>
+                      </div>
+                    );
+                  },
+                },
 
-                      </p>
-                    </div>
-                  );
-                }
-              },
-
-              {
-                field: "subtotal",
-                headerName: "Subtotal",
-                width: 130,
-                editable: false,
-                headerAlign: "center",
-                cellAlign: "center",
-                renderCell: (params: any) => {
-                  return (
-                    <div className="flex justify-center space-x-2 mx-auto items-center">
-                      <p className="text-slate-500 text-base font-medium items-center mb-0">
-                        $ {params.value.toFixed(2)}
-                      </p>
-                    </div>
-                  );
+                {
+                  field: "subtotal",
+                  headerName: "Subtotal",
+                  width: 130,
+                  editable: false,
+                  headerAlign: "center",
+                  cellAlign: "center",
+                  renderCell: (params: any) => {
+                    return (
+                      <div className="flex justify-center space-x-2 mx-auto items-center">
+                        <p className="text-slate-500 text-base font-medium items-center mb-0">
+                          $ {params.value.toFixed(2)}
+                        </p>
+                      </div>
+                    );
+                  },
                 },
-              },
-              {
-                field: "total",
-                headerName: "Total",
-                width: 130,
-                editable: false,
-                headerAlign: "center",
-                cellAlign: "center",
-                renderCell: (params: any) => {
-                  return (
-                    <div className="flex justify-center space-x-2 mx-auto items-center">
-                      <p className="text-slate-500 text-base font-medium items-center mb-0">
-                        $ {params.value.toFixed(2)}
-                      </p>
-                    </div>
-                  );
+                {
+                  field: "total",
+                  headerName: "Total",
+                  width: 130,
+                  editable: false,
+                  headerAlign: "center",
+                  cellAlign: "center",
+                  renderCell: (params: any) => {
+                    return (
+                      <div className="flex justify-center space-x-2 mx-auto items-center">
+                        <p className="text-slate-500 text-base font-medium items-center mb-0">
+                          $ {params.value.toFixed(2)}
+                        </p>
+                      </div>
+                    );
+                  },
                 },
-              },
-              {
-                field: "actions",
-                headerName: "Acciones",
-                width: 470,
-                headerAlign: "center",
-                renderCell: (params: any) => {
-                  return (
-                    <div className="flex justify-center space-x-2 mx-auto">
-                      <Tooltip title="Eliminar" arrow>
-                        <button
-                          onClick={() => {
-                            dispatch(removeSpecificSale(params.row.id));
-                          }}
-                          className="p-1 w-11 rounded-full  bg-red-500"
-                        >
-                          <i className="fa fa-trash text-slate-100"></i>
-                        </button>
-                      </Tooltip>
-                    </div>
-                  );
+                {
+                  field: "actions",
+                  headerName: "Acciones",
+                  width: 470,
+                  headerAlign: "center",
+                  renderCell: (params: any) => {
+                    return (
+                      <div className="flex justify-center space-x-2 mx-auto">
+                        <Tooltip title="Eliminar" arrow>
+                          <button
+                            onClick={() => {
+                              dispatch(removeSpecificSale(params.row.id));
+                            }}
+                            className="p-1 w-11 rounded-full  bg-red-500"
+                          >
+                            <i className="fa fa-trash text-slate-100"></i>
+                          </button>
+                        </Tooltip>
+                      </div>
+                    );
+                  },
                 },
-              },
-            ]}
-          />
+              ]}
+            />
+          ) : (
+            <div className="flex justify-center items-center">
+              <Chip
+                label="No hay tickets cargados"
+                color="primary"
+                variant="outlined"
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>

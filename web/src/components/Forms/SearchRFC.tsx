@@ -33,6 +33,7 @@ export const SearchRFC = ({
           id="rfc"
           value={formik.values.rfc}
           onChange={formik.handleChange}
+          // disabled={!
         />
 
         {showSearchButton && (

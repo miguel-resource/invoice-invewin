@@ -6,7 +6,7 @@ export const VerifySupplierInitial = {
     razonSocial: "",
     codigoPostal: "",
     regimenFiscal: "",
-    email: "email@gmail.com",
+    email: "",
     usoCfdi: "",  
 };
 
@@ -22,11 +22,12 @@ export const VerifySupplierSchema = Yup.object().shape({
     .max(100000, "Muy largo!"),
     regimenFiscal: Yup.string()
     .required("Requerido"),
-    // email: Yup.string()
-    // // .required("Requerido")
-    // .email("Correo electrónico inválido")
-    // .min(7, "Muy corto!")
-    // .max(51, "Muy largo!"),
-    // usoCfdi: Yup.string()
-    // .required("Requerido"),
+    
+    email: Yup.string()
+    .required("Requerido")
+    .email("Correo electrónico inválido")
+    .min(7, "Muy corto!")
+    .max(51, "Muy largo!"),
+    usoCfdi: Yup.string()
+    .required("Requerido"),
 });

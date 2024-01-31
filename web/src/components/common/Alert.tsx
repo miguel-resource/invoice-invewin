@@ -17,12 +17,14 @@ export default function CommonAlert(props: CommonAlertProps) {
 
   return (
     <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      anchorOrigin={{ vertical: "top", horizontal: "left" }}
       open={open}
       autoHideDuration={6000}
       onClose={handleClose}
+      transitionDuration={500}
+
     >
-      <Alert onClose={handleClose} severity={type}>
+      <Alert onClose={handleClose} severity={type} variant="filled">
         {message}
       </Alert>
     </Snackbar>

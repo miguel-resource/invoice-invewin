@@ -23,9 +23,16 @@ export default function RootLayout({
             rel="stylesheet"
           />
         </head>
-        <body>
+        <body
+        >
+          <div
+            className="h-screen bg-slate-100"
+          >
+
           <Header />
           {children}
+          </div>
+
         </body>
       </html>
     </Provider>

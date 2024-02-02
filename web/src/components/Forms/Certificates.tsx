@@ -49,7 +49,27 @@ export default function CertificatesForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.key}
+            accept=".key"
           />
+  
+            {/*  File preview */} 
+          <section>
+            {formik.values.key && (
+              <div className="flex flex-row justify-center items-center gap-4 mt-4">
+                <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
+                  {formik.values.key.split("\\")[2]}
+                </p>
+                <button
+                  type="button"
+                  className="btn bg-red-500 border-none btn-sm"
+                  onClick={() => formik.setFieldValue("key", "")}
+                >
+                  <i className="fas fa-trash-alt text-slate-50"></i>
+                </button>
+              </div>
+            )}
+          </section>
+
         </div>
         <div className="flex flex-col w-full mb-4">
           <label className="form-label mb-2">Certificado</label>
@@ -60,7 +80,27 @@ export default function CertificatesForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.cer}
+            accept=".cer"
           />
+
+          {/*  File preview */}
+          <section>
+            {formik.values.cer && (
+              <div className="flex flex-row justify-center items-center gap-4 mt-4">
+                <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
+                  {formik.values.cer.split("\\")[2]}
+                </p>
+                <button
+                  type="button"
+                  className="btn bg-red-500 border-none btn-sm"
+                  onClick={() => formik.setFieldValue("cer", "")}
+                >
+                  <i className="fas fa-trash-alt text-slate-50"></i>
+                </button>
+              </div>
+            )}
+          </section>
+
         </div>
         {/* password */}
         <div className="flex flex-col w-full mb-4">

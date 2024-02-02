@@ -34,7 +34,7 @@ export default function LoginSupplier() {
 
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
-
+    console.log("FORMIK", formik.values);
     dispatch(setLoginCompany(formik.values));
 
     authCompany(formik.values.email, formik.values.password)

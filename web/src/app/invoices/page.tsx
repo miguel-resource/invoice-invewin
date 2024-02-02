@@ -2,17 +2,17 @@
 
 import TableGrid from "@/components/common/Table";
 import dynamic from "next/dynamic";
-import { fa, faker, he } from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
 import { Chip, Tooltip } from "@mui/material";
-import { render } from "react-dom";
+import { useEffect, useLayoutEffect } from "react";
+import { getAllInvoices } from "@/services/Company";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { getAllInvoices } from '../../services/Company';
 
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
 });
 export default function InvoicePage() {
+
   const createRandomInvoice = () => {
     return {
       id: faker.datatype.uuid(),
@@ -32,22 +32,10 @@ export default function InvoicePage() {
   };
 
   const data = faker.helpers.multiple(createRandomInvoice, {
-    count: 10,
+    count: 100,
   });
-  // const [data, setData] = useState([]);
-
-  // const companyLogin = useSelector((state: any) => state.loginCompany);
 
 
-  // useEffect (() => {
-  //   handleGetInvoices();
-  // }, []);
-
-
-  // const handleGetInvoices = async () => {
-  //   const res = await getAllInvoices(companyLogin.email);
-  //   setData(res.data);
-  // }
 
 
   return (
@@ -56,9 +44,8 @@ export default function InvoicePage() {
         className="panel panel-inverse h-full"
         data-sortable-id="form-stuff-1"
       >
-        <div className="panel-body">
+        <div className="flex items-center justify-center h-full">
           <TableGrid
-            data={data}
             columns={[
               {
                 field: "date",

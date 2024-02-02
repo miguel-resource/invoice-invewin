@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { removeSpecificSale } from "@/redux/saleSlice";
 import { render } from "react-dom";
+import TableTickets from "../common/TableTickets";
 
 type Props = {
   formik: any;
@@ -67,7 +68,7 @@ export const TicketsGrid = ({ formik }: Props) => {
 
         <div className="mt-10">
           {sales.length !== 0 ? (
-            <TableGrid
+            <TableTickets
               data={sales}
               columns={[
                 {

@@ -79,6 +79,35 @@ namespace CompanyController {
     // ctx.body = data.data;
   }
 
+  export async function getInvoices(ctx: any) {
+    const { userName, password } = ctx.request.body;
+
+    const userNameRoute = userName.replace("@", "%40");
+    const user: User = await UserController.getUser(userNameRoute);
+
+    const accessToken = await InvewinController.authCustom(
+      password,
+      userName,
+      user.empresaId
+    );
+
+    const data = await http.get(
+      process.env.INVEWIN_API_URL +
+        "/empresas/" +
+        user.empresaId +
+        "/documentoscfd",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    console.log("DATA", data.data);
+
+    ctx.status = 200;
+    ctx.body = data.data;
+  }
 
 }
 

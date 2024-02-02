@@ -188,7 +188,7 @@ export const Stamp = () => {
         <section className="flex flex-row items-center justify-center gap-36 w-full ">
           <TotalInvoice />
           <ButtonStampInvoice isValidToStamp={
-            isValidToStamp && formikEditSupplier.isValid && formikEditSupplier.dirty && sales.length > 0
+            isValidToStamp || formikEditSupplier.isValid && formikEditSupplier.dirty && sales.length > 0
           } />
         </section>
       </div>

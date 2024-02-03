@@ -36,6 +36,8 @@ export default function VerifySupplier() {
       password: companyLogin.password,
     }
 
+    console.log("data", data);
+
     updateCompany(data).then((res) => {
       setMessage("Datos actualizados correctamente");
       setType("success");
@@ -203,7 +205,13 @@ export default function VerifySupplier() {
 
         {/* button */}
         <div className="flex justify-center mt-8">
-          <button type="submit" className="btn  btn-primary mt-3">
+          <button type="submit" 
+            className={
+              formik.isValid
+                ? "btn btn-primary w-1/2"
+                : "bg-slate-300 w-1/2"
+            }
+            >
             Actualizar datos
           </button>
         </div>

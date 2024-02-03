@@ -7,14 +7,12 @@ export const VerifySupplierInitial = {
     codigoPostal: "",
     regimenFiscal: "",
     email: "",
-    usoCfdi: "",  
+  
 };
 
 export const VerifySupplierSchema = Yup.object().shape({
     razonSocial: Yup.string()
     .required("Requerido"),
-    // .min(7, "Muy corto!")
-    // .max(51, "Muy largo!"),
     codigoPostal: Yup.number()
     .required("Requerido")
     .typeError("Debe ser un número")
@@ -22,12 +20,9 @@ export const VerifySupplierSchema = Yup.object().shape({
     .max(100000, "Muy largo!"),
     regimenFiscal: Yup.string()
     .required("Requerido"),
-    
     email: Yup.string()
     .required("Requerido")
     .email("Correo electrónico inválido")
     .min(7, "Muy corto!")
     .max(51, "Muy largo!"),
-    usoCfdi: Yup.string()
-    .required("Requerido"),
 });

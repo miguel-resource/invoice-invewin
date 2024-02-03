@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
 });
+
 export default function VerifySupplier() {
   return (
     <MainWrapper>

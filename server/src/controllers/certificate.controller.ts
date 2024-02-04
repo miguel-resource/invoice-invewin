@@ -49,20 +49,24 @@ namespace CerfificatesController {
       userName,
       user.empresaId
     );
+    console.log(accessToken);
 
     const data = await http.get(
       process.env.INVEWIN_API_URL +
         "/empresas/" +
         user.empresaId +
-        "/certificados",
+        "/documentoscfd",
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       }
     );
+    console.log(data.data);
 
     ctx.status = 200;
     ctx.body = data.data;
   }
 }
+
+export default CerfificatesController;

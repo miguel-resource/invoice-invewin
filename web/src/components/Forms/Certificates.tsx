@@ -1,11 +1,17 @@
+import { getCertificates } from "@/services/Certificates";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function CertificatesForm() {
   const router = useRouter();
   const company = useSelector((state: any) => state.company);
+  const loginCompany = useSelector((state: any) => state.loginCompany);
+
+  const [isUpdating, setIsUpdating] = useState(false);
+
+
 
   const formik = useFormik({
     // validationSchema: VerifySupplierSchema,
@@ -21,11 +27,32 @@ export default function CertificatesForm() {
     },
   });
 
+  const getCertificate = async () =>{
+    const res = await getCertificates(loginCompany.email, loginCompany.password);
+
+    if(res.data && res.data.length > 0){
+      formik.setFieldValue("key", res.data[0].key);
+      formik.setFieldValue("cer", res.data[0].cer);
+      formik.setFieldValue("password", res.data[0].password);
+
+      setIsUpdating(true);
+      return;
+    } 
+
+    setIsUpdating(false);
+  }
+
+
   useLayoutEffect(() => {
     if (!company.rfc) {
       router.push("/login-supplier");
     }
   }, [company]);
+
+  useEffect(() => {
+    getCertificate();
+  }
+  , []);
 
   return (
     <form
@@ -33,13 +60,29 @@ export default function CertificatesForm() {
       onSubmit={formik.handleSubmit}
     >
       <div
-        className="row mb-15px w-10/12
+        className="row mb-15px w-12/12
         bg-white
         shadow-lg
         mx-auto p-8
         rounded-xl
       "
       >
+        {/* agrega una descripcion si no tiene certificados indicando que debe agregarlos */}
+        {!isUpdating && (
+        <p
+          className="text-center text-red-600 italic text-sm
+          mb-4
+          "
+        >
+     
+          <i className="fas fa-exclamation-triangle  mr-2"></i>
+          Agrega tus certificados para poder
+          firmar tus facturas
+       
+        </p>
+
+        )}
+
         <div className="flex flex-col w-full mb-4">
           <label className="form-label mb-2">Llave privada</label>
           <input
@@ -123,7 +166,7 @@ export default function CertificatesForm() {
             className="btn btn-primary w-3/12 mt-0"
             disabled={formik.isSubmitting}
           >
-            Guardar
+            {isUpdating ? "Actualizar" : "Guardar"}
           </button>
         </div>
       </div>

@@ -6,8 +6,8 @@ export const VerifySupplierInitial = {
     razonSocial: "",
     codigoPostal: "",
     regimenFiscal: "",
+    claveRegimenFiscal: "",
     email: "",
-  
 };
 
 export const VerifySupplierSchema = Yup.object().shape({
@@ -25,4 +25,5 @@ export const VerifySupplierSchema = Yup.object().shape({
     .email("Correo electrónico inválido")
     .min(7, "Muy corto!")
     .max(51, "Muy largo!"),
+    serieFacturacion: Yup.string()
 });

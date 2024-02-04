@@ -12,7 +12,7 @@ import {
 
 import { getCatalogs } from "@/services/Catalog";
 import { useSelector } from "react-redux";
-import { updateCompany } from "@/services/Company";
+import { getCompanyData, updateCompany } from "@/services/Company";
 
 export default function VerifySupplier() {
   const router = useRouter();
@@ -23,20 +23,29 @@ export default function VerifySupplier() {
   );
   const [open, setOpen] = useState(false);
   const [catalogRegime, setCatalogRegime] = useState([]);
+  const [dataIsChanged, setDataIsChanged] = useState(false);
 
-  const company = useSelector((state: any) => state.company);
+  const companySelector = useSelector((state: any) => state.company);
   const companyLogin = useSelector((state: any) => state.loginCompany);
 
   const handleInvoice = () => {
     // eslint-disable-next-line no-console
 
+    const company = {
+      ...formik.values,
+      claveRegimenFiscal: formik.values.regimenFiscal.split(" - ")[0],
+      regimenFiscal: formik.values.regimenFiscal.split(" - ")[1],
+      serieFacturacion: "A",
+      id: companySelector.id,
+    };
+
     const data = {
-      company: formik.values,
+      company,
       userName: companyLogin.email,
       password: companyLogin.password,
     }
 
-    console.log("data", data);
+
 
     updateCompany(data).then((res) => {
       setMessage("Datos actualizados correctamente");
@@ -52,18 +61,52 @@ export default function VerifySupplier() {
       setType("error");
       setOpen(true);
     });
-      
+
   };
 
   const handleGetCatalogs = async () => {
     const res = await getCatalogs();
-    
+
     setCatalogRegime(res.data.cRegimenFiscal.c_RegimenFiscal);
   };
+
+  const handleGetCompany = async () => {
+    // eslint-disable-next-line no-console
+    console.log("get company");
+
+    const res = await getCompanyData(companyLogin.email);
+    console.log("Company", res.data);
+    
+
+    formik.setFieldValue("rfc", res.data.rfc);
+    formik.setFieldValue("razonSocial", res.data.razonSocial);
+    formik.setFieldValue("codigoPostal", res.data.codigoPostal);
+    formik.setFieldValue("regimenFiscal", res.data.claveRegimenFiscal + " - " + res.data.regimenFiscal);
+    formik.setFieldValue("email", res.data.email);
+
+  }
+
+  const handleCheckChanges = () => {
+    if (
+      formik.values.rfc !== companySelector.rfc ||
+      formik.values.razonSocial !== companySelector.razonSocial ||
+      formik.values.email !== companySelector.email ||
+      formik.values.codigoPostal !== companySelector.codigoPostal ||
+      formik.values.regimenFiscal !==
+      companySelector.claveRegimenFiscal + " - " + companySelector.regimenFiscal
+    ) {
+      setDataIsChanged(true);
+    } else {
+      setDataIsChanged(false);
+    }
+  }
 
   const formik = useFormik({
     validationSchema: VerifySupplierSchema,
     initialValues: VerifySupplierInitial,
+    validateOnBlur: true,
+    validateOnChange: true,
+    validateOnMount: true,
     onSubmit: (values) => {
       handleInvoice();
     },
@@ -71,18 +114,17 @@ export default function VerifySupplier() {
 
   useEffect(() => {
     handleGetCatalogs();
+    handleGetCompany();
 
-    if (company.rfc) {
-      formik.setFieldValue("rfc", company.rfc);
-      formik.setFieldValue("razonSocial", company.razonSocial);
-      formik.setFieldValue("codigoPostal", company.codigoPostal);
-      formik.setFieldValue("regimenFiscal", company.claveRegimenFiscal);
-      formik.setFieldValue("email", company.email);
-    }
-  }, [company]);
+
+  }, []);
 
   useLayoutEffect(() => {
-    if (!company.rfc) {
+    handleCheckChanges();
+  }, [formik.values]);
+
+  useLayoutEffect(() => {
+    if (!companySelector.rfc) {
       router.push("/login-supplier");
     }
   }, []);
@@ -102,7 +144,9 @@ export default function VerifySupplier() {
               placeholder="RFC"
               id="rfc"
               name="rfc"
-              onChange={formik.handleChange}
+              onChange={
+                formik.handleChange
+              }
               value={formik.values.rfc}
               disabled={true}
             />
@@ -152,7 +196,7 @@ export default function VerifySupplier() {
               ? formik.errors.rfc
               : null}
           </span>
-        
+
 
         </div>
 
@@ -175,7 +219,7 @@ export default function VerifySupplier() {
           </span>
         </div>
 
-        <div className="mb-10px">
+        <div className="mb-20px">
           <label className="form-label mb-24">Régimen Fiscal</label>
           <div className="mt-5px">
             <select
@@ -188,13 +232,15 @@ export default function VerifySupplier() {
               <option value="">Selecciona una opción</option>
               {catalogRegime.map((item: any) =>
                 item.fisisca === "Sí" ? (
-                  <option key={item.clave} value={item.clave}>
-                    {item.descripcion}
+                  <option key={item.clave}
+                    value={
+                      item.clave + " - " + item.descripcion
+                    }>
+                    {item.clave} - {item.descripcion}
                   </option>
                 ) : null
               )}
 
-              <p>{formik.values.regimenFiscal}</p>
             </select>
           </div>
 
@@ -204,14 +250,15 @@ export default function VerifySupplier() {
         </div>
 
         {/* button */}
-        <div className="flex justify-center mt-8">
-          <button type="submit" 
+        <div className="flex justify-center mt-24">
+          <button type="submit"
             className={
-              formik.isValid
+              formik.isValid && dataIsChanged
                 ? "btn btn-primary w-1/2"
-                : "bg-slate-300 w-1/2"
+                : "btn disabled w-1/2"
             }
-            >
+            disabled={!formik.isValid && !dataIsChanged}
+          >
             Actualizar datos
           </button>
         </div>

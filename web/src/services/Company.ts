@@ -16,15 +16,19 @@ export const authCompany = async (userName: string, password: string) => {
   });
 };
 
-
 export const updateCompany = async (data: any) => {
   return http.post(path + `/update`, data);
 }
-
 
 export const getAllInvoices = async (userName: string, password: string) => {
   return http.post(path + `/invoices`, {
     userName,
     password
+  });
+}
+
+export async function getCompanyData(userName: string) {
+  return http.post(path, {
+    userName
   });
 }

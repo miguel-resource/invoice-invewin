@@ -8,6 +8,7 @@ const http = axios.create({
 });
 
 namespace CompanyController {
+
   export async function authCompany(ctx: any) {
     const { userName, password } = ctx.request.body;
 
@@ -42,20 +43,35 @@ namespace CompanyController {
     return data;
   }
 
+  export async function getCompanyEmisor(ctx: any) {
+    const { userName } = ctx.request.body;
+
+    const userNameRoute = userName.replace("@", "%40");
+
+    const user: User = await UserController.getUser(userNameRoute);
+
+    const company = await getCompany(user.empresaId);
+
+    ctx.status = 200;
+    ctx.body = company.data;
+  }
+
   export async function updateCompany(ctx: any) {
-    const { company } = ctx.request.body;
+    const { company, userName, password } = ctx.request.body;
 
-    // const accessToken = await InvewinController.authCustom(
-    //   password,
-    //   userName,
-    //   user.empresaId
-    // );
+    const userNameRoute = userName.replace("@", "%40");
+    const user: User = await UserController.getUser(userNameRoute);
 
+    const accessToken = await InvewinController.authCustom(
+      password,
+      userName,
+      user.empresaId
+    );
     // const accessToken = await InvewinController.auth();
-
+  
     await http
       .put(
-        process.env.INVEWIN_API_URL + "/empresas/emisor" + user.empresaId,
+        process.env.INVEWIN_API_URL + "/empresas/emisor/" + user.empresaId,
         company,
         {
           headers: {
@@ -64,10 +80,10 @@ namespace CompanyController {
         }
       )
       .then((response) => {
-        console.log("RESPONSE", response.data);
         ctx.status = response.status;
       })
       .catch((err) => {
+        console.log("DATA ERROR", err.response);
         console.log("ERROR", err.response.data);
         ctx.status = err.response.status;
       });

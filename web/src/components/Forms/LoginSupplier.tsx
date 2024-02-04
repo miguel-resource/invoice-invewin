@@ -37,14 +37,16 @@ export default function LoginSupplier() {
     dispatch(setLoginCompany(formik.values));
 
     authCompany(formik.values.email, formik.values.password)
-      .then((res) => {  
+      .then((res) => {
         if (res.data) {
           setMessage("Inicio de sesión correcto");
           setType("success");
           setOpen(true);
+          console.log("authCompany -> res.data", res.data);
+          dispatch(setCompany(res.data));
 
           setTimeout(() => {
-            dispatch(setCompany(res.data));
+
             router.push("/invoices");
           }, 2000);
         }

@@ -4,9 +4,6 @@ import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { CertificateSchema } from '../../schemas/Certificate';
-import { readFile } from "fs";
-import { resolve } from "path";
 
 export default function CertificatesForm() {
   const router = useRouter();
@@ -22,6 +19,19 @@ export default function CertificatesForm() {
     validateOnMount: false,
     onSubmit:(values: any) => {
       console.log(values);
+  
+      const formData = new FormData();
+
+      formData.append("key", values.key);
+      formData.append("cer", values.cer);
+      formData.append("password", values.password);
+
+      if (isUpdating) {
+        // updateCertificate(loginCompany.email, loginCompany.password, formData);
+      } else {
+        // createCertificate(loginCompany.email, loginCompany.password, formData);
+      }
+      
     },
   });
 

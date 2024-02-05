@@ -6,7 +6,7 @@ const router = new Router();
 
 const path = "/catalog";
 
-router.get(path, async (ctx) => {
+router.get(path, async (ctx: any) => {
   const catalogs = await getAllCatalogs(ctx);
   ctx.body = catalogs;
 });

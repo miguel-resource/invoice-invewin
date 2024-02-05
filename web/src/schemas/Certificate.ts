@@ -7,14 +7,14 @@ export const CertificateInitial = {
 };
 
 export const CertificateSchema = Yup.object().shape({
-  key: Yup.mixed()
+  key: Yup.string()
     .required("Requerido")
     .test(
       "file",
       "Solo debe ser archivos",
       (value: any) => value && value.type === "application/x-x509-ca-cert"
     ),
-  cer: Yup.mixed()
+  cer: Yup.string()
     .required("Requerido")
     .test(
       "file",

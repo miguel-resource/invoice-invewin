@@ -83,7 +83,6 @@ namespace CompanyController {
         ctx.status = response.status;
       })
       .catch((err) => {
-        console.log("DATA ERROR", err.response);
         console.log("ERROR", err.response.data);
         ctx.status = err.response.status;
       });
@@ -116,7 +115,6 @@ namespace CompanyController {
       }
     );
 
-    console.log("DATA", data.data);
 
     ctx.status = 200;
     ctx.body = data.data;

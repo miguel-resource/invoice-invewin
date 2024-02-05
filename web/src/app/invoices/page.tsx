@@ -44,7 +44,7 @@ export default function InvoicePage() {
         className="panel panel-inverse h-full"
         data-sortable-id="form-stuff-1"
       >
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full w-11/12 mx-auto mt-20 mb-20">
           <TableGrid
             columns={[
               {

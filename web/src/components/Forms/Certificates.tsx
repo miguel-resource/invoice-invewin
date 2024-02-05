@@ -1,8 +1,12 @@
+import { CertificateInitial } from "@/schemas/Certificate";
 import { getCertificates } from "@/services/Certificates";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { CertificateSchema } from '../../schemas/Certificate';
+import { readFile } from "fs";
+import { resolve } from "path";
 
 export default function CertificatesForm() {
   const router = useRouter();
@@ -11,37 +15,33 @@ export default function CertificatesForm() {
 
   const [isUpdating, setIsUpdating] = useState(false);
 
-
-
   const formik = useFormik({
-    // validationSchema: VerifySupplierSchema,
-    initialValues: {
-      key: "",
-      cer: "",
-      password: "",
-    },
+    // validationSchema: CertificateSchema,
+    initialValues: CertificateInitial,
     validateOnChange: true,
     validateOnMount: false,
-    onSubmit: (values) => {
-      // handleInvoice(values);
+    onSubmit:(values: any) => {
+      console.log(values);
     },
   });
 
-  const getCertificate = async () =>{
-    const res = await getCertificates(loginCompany.email, loginCompany.password);
+  const getCertificate = async () => {
+    const res = await getCertificates(
+      loginCompany.email,
+      loginCompany.password
+    );
 
-    if(res.data && res.data.length > 0){
+    if (res.data && res.data.length > 0) {
       formik.setFieldValue("key", res.data[0].key);
       formik.setFieldValue("cer", res.data[0].cer);
       formik.setFieldValue("password", res.data[0].password);
 
       setIsUpdating(true);
       return;
-    } 
+    }
 
     setIsUpdating(false);
-  }
-
+  };
 
   useLayoutEffect(() => {
     if (!company.rfc) {
@@ -51,8 +51,7 @@ export default function CertificatesForm() {
 
   useEffect(() => {
     getCertificate();
-  }
-  , []);
+  }, []);
 
   return (
     <form
@@ -69,18 +68,14 @@ export default function CertificatesForm() {
       >
         {/* agrega una descripcion si no tiene certificados indicando que debe agregarlos */}
         {!isUpdating && (
-        <p
-          className="text-center text-red-600 italic text-sm
+          <p
+            className="text-center text-red-600 italic text-sm
           mb-4
           "
-        >
-     
-          <i className="fas fa-exclamation-triangle  mr-2"></i>
-          Agrega tus certificados para poder
-          firmar tus facturas
-       
-        </p>
-
+          >
+            <i className="fas fa-exclamation-triangle  mr-2"></i>
+            Agrega tus certificados para poder firmar tus facturas
+          </p>
         )}
 
         <div className="flex flex-col w-full mb-4">
@@ -89,18 +84,23 @@ export default function CertificatesForm() {
             className="form-control"
             type="file"
             name="key"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.key}
+            id="key"
+            onChange={(e) => {
+              console.log(e.target.files);
+              formik.setFieldValue(
+                "key",
+                e.target.files ? e.target.files[0] : ""
+              );
+            }}
             accept=".key"
           />
-  
-            {/*  File preview */} 
+
+          {/*  File preview */}
           <section>
             {formik.values.key && (
               <div className="flex flex-row justify-center items-center gap-4 mt-4">
                 <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
-                  {formik.values.key.split("\\")[2]}
+                  {/* {formik.values.key.split("\\")[2]} */}
                 </p>
                 <button
                   type="button"
@@ -112,7 +112,6 @@ export default function CertificatesForm() {
               </div>
             )}
           </section>
-
         </div>
         <div className="flex flex-col w-full mb-4">
           <label className="form-label mb-2">Certificado</label>
@@ -120,9 +119,14 @@ export default function CertificatesForm() {
             className="form-control"
             type="file"
             name="cer"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.cer}
+            id="cer"
+            onChange={(e) => {
+              formik.setFieldValue(
+                "cer",
+                e.target.files ? e.target.files[0] : ""
+              );
+            }}
+
             accept=".cer"
           />
 
@@ -131,7 +135,7 @@ export default function CertificatesForm() {
             {formik.values.cer && (
               <div className="flex flex-row justify-center items-center gap-4 mt-4">
                 <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
-                  {formik.values.cer.split("\\")[2]}
+                  {/* {formik.values.cer.split("\\")[2]} */}
                 </p>
                 <button
                   type="button"
@@ -143,7 +147,6 @@ export default function CertificatesForm() {
               </div>
             )}
           </section>
-
         </div>
         {/* password */}
         <div className="flex flex-col w-full mb-4">
@@ -156,14 +159,16 @@ export default function CertificatesForm() {
             onBlur={formik.handleBlur}
             value={formik.values.password}
           />
-
         </div>
-
 
         <div className="flex justify-center w-full mt-8">
           <button
             type="submit"
-            className="btn btn-primary w-3/12 mt-0"
+            className={
+              !formik.isValid
+                ? "btn btn-primary w-3/12 mt-0 disabled"
+                : "btn btn-primary w-3/12 mt-0"
+            }
             disabled={formik.isSubmitting}
           >
             {isUpdating ? "Actualizar" : "Guardar"}

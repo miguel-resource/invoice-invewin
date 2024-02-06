@@ -28,8 +28,10 @@ export default function CertificatesForm() {
 
       if (isUpdating) {
         // updateCertificate(loginCompany.email, loginCompany.password, formData);
+        console.log("updating", formData.values());
       } else {
         // createCertificate(loginCompany.email, loginCompany.password, formData);
+        console.log("creating", formData.values());
       }
       
     },

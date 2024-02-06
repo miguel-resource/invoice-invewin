@@ -2,7 +2,6 @@
 
 import TableGrid from "@/components/common/Table";
 import dynamic from "next/dynamic";
-import { faker } from "@faker-js/faker";
 import { Chip, Tooltip } from "@mui/material";
 import { useEffect, useLayoutEffect } from "react";
 import { getAllInvoices } from "@/services/Company";
@@ -12,28 +11,6 @@ const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
 });
 export default function InvoicePage() {
-
-  const createRandomInvoice = () => {
-    return {
-      id: faker.datatype.uuid(),
-      date: faker.date.anytime(),
-      folio: faker.datatype.uuid(),
-      serie: faker.date.anytime().getFullYear(),
-      rfcClient: faker.datatype.number(),
-      nameClient: faker.person.fullName(),
-      total: "$ " + faker.finance.amount(),
-      methodPayment: faker.helpers.shuffle([
-        "Efectivo",
-        "Tarjeta",
-        "Transferencia",
-      ])[0],
-      // actions: faker.datatype.number(),
-    };
-  };
-
-  const data = faker.helpers.multiple(createRandomInvoice, {
-    count: 100,
-  });
 
 
 
@@ -54,6 +31,7 @@ export default function InvoicePage() {
                 width: 130,
                 editable: false,
                 headerAlign: "center",
+                align: "center",
               },
               {
                 field: "serie",
@@ -61,6 +39,7 @@ export default function InvoicePage() {
                 width: 120,
                 editable: false,
                 headerAlign: "center",
+                align: "center",
               },
               {
                 field: "folio",
@@ -68,6 +47,7 @@ export default function InvoicePage() {
                 width: 300,
                 editable: false,
                 headerAlign: "center",
+                align: "center",
               },
               {
                 field: "rfcClient",
@@ -75,6 +55,7 @@ export default function InvoicePage() {
                 width: 200,
                 editable: false,
                 headerAlign: "center",
+                align: "center",
               },
               {
                 field: "nameClient",
@@ -82,7 +63,8 @@ export default function InvoicePage() {
                 width: 300,
                 editable: false,
                 headerAlign: "center",
-                cellAlign: "center",
+                cellAlign: "left",
+                align: "center",
               },
               {
                 field: "total",
@@ -91,6 +73,7 @@ export default function InvoicePage() {
                 editable: false,
                 headerAlign: "center",
                 cellAlign: "center",
+                align: "center",
               },
               {
                 field: "methodPayment",
@@ -111,23 +94,19 @@ export default function InvoicePage() {
               },
               {
                 field: "actions",
-                headerName: "Acciones",
+                headerName: "",
                 width: 470,
                 headerAlign: "center",
                 renderCell: () => {
                   return (
                     <div className="flex justify-center space-x-2 mx-auto">
-                      <Tooltip title="Ver" arrow>
-                        <button className="p-1 w-11 rounded-full  bg-slate-500">
-                          <i className="fa fa-eye text-slate-100"></i>
+                      <Tooltip title="Ver" arrow placement="right">
+                        <button className="p-1 w-11 rounded-full  ">
+                          <i className="fa fa-eye text-slate-700"></i>
                         </button>
                       </Tooltip>
 
-                      <Tooltip title="Descargar" arrow>
-                        <button className="p-1 w-11 rounded-full bg-blue-500">
-                          <i className="fa fa-download text-slate-100"></i>
-                        </button>
-                      </Tooltip>
+                     
                     </div>
                   );
                 },

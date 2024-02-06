@@ -22,33 +22,38 @@ export default function TableGrid() {
     });
 
     // Header 
-    doc.setFillColor(0, 0, 0);
+    doc.setFillColor(0, 0, 0)
+    doc.setFontSize(14);
+ 
+    doc.rect(0, 0, 210, 40, "F");
+    doc.text("Your Company Name", 10, 20);
 
-    
-  
-
-    doc.setFontSize(12);
-    doc.text("Your Company Name", 15, 10);
-    doc.text("Dirección", 15, 20);
-    doc.text("Ciudad, Estado", 15, 30);
-
-    const gridWidth = 180;
+    const gridWidth = 90;
     const gridHeight = 20;
     const leftMargin = 10;
     const topMargin = 70;
     doc.setLineWidth(0.3);
 
-    doc.text("Fecha: ", leftMargin, topMargin + gridHeight);
-    doc.text(new Date(data.date).toLocaleDateString(), leftMargin + gridWidth / 13, topMargin + gridHeight);
 
-    doc.text("Serie: " + data.serie, leftMargin, topMargin + gridHeight * 2);
-    doc.text("Folio: " + data.folio, leftMargin + gridWidth / 2, topMargin + gridHeight * 2);
-    doc.text("RFC del Cliente: " + data.rfcClient, leftMargin, topMargin + gridHeight * 3);
-    doc.text("Razón Social: " + data.nameClient, leftMargin, topMargin + gridHeight * 4);
+    doc.setFont("sans-serif", "normal");  
+    doc.text("Fecha: " + new Date(data.date).toLocaleDateString()
+      , leftMargin, topMargin - 10);
 
+      // line
+      doc.line(leftMargin, topMargin, leftMargin + gridWidth * 2, topMargin); 
 
-    doc.line(leftMargin, topMargin + gridHeight * 7, leftMargin + gridWidth + 5, topMargin + gridHeight * 7); // Separator
+    // Fiscal data like a grid with 2 columns
+    doc.text("Serie: " + data.serie, leftMargin, topMargin + gridHeight);
+    doc.text("Folio: " + data.folio, leftMargin + gridWidth, topMargin + gridHeight);
+
+    doc.text("RFC Cliente: " + data.rfcClient, leftMargin, topMargin + gridHeight * 2);
+    doc.text("Razón Social: " + data.nameClient , leftMargin + gridWidth, topMargin + gridHeight * 2);
+    doc.line(leftMargin, topMargin + gridHeight * 3, leftMargin + gridWidth * 2, topMargin + gridHeight * 3);
+    
     doc.text("Método de Pago: " + data.methodPayment, leftMargin, topMargin + gridHeight * 8);
+    // total with
+    doc.setFontSize(20);
+    doc.setFont("sans-serif", "bold");
     doc.text("Total: " + data.total, leftMargin, topMargin + gridHeight * 9);
 
     doc.output("dataurlnewwindow");

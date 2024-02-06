@@ -8,7 +8,9 @@ export default function Header() {
   const company = useSelector((state: any) => state.company);
 
   return (
-    <div id="header" className="app-header border-b-2  border-slate-500">
+    <div id="header"
+      style={{ position: "absolute", width: "100%" }}
+      className="app-header border-b-2  border-slate-500">
       <div className="navbar-header ">
         <a
           href="/"
@@ -25,10 +27,9 @@ export default function Header() {
               className={`relative ease-out text-slate-800 no-underline
                 after:-bottom-3 after:absolute after:left-0 after:right-0 after:h-1 after:bg-slate-700 after:transition-all after:duration-300 after:ease-out  after:shadow-slate-500 after:opacity-0 after:z-10 after:scale-x-0 after:transform-gpu after:origin-left  hover:after:scale-x-100 
                 hover:after:opacity-100 hover:after:z-20 
-                ${
-                  path === "/load-ticket"
-                    ? "after:scale-x-100 after:opacity-100 after:z-20"
-                    : ""
+                ${path === "/load-ticket"
+                  ? "after:scale-x-100 after:opacity-100 after:z-20"
+                  : ""
                 }`}
             >
               <span className="d-none d-md-inline">Facturar</span>
@@ -41,10 +42,9 @@ export default function Header() {
               className={`relative ease-out text-slate-700 no-underline
                 after:-bottom-3 after:absolute after:left-0 after:right-0 after:h-1 after:bg-slate-700 after:transition-all after:duration-300 after:ease-out  after:shadow-slate-500 after:opacity-0 after:z-10 after:scale-x-0 after:transform-gpu after:origin-left  hover:after:scale-x-100 
                 hover:after:opacity-100 hover:after:z-20
-                ${
-                  path === "/login-supplier"
-                    ? "after:scale-x-100 after:opacity-100 after:z-20"
-                    : ""
+                ${path === "/login-supplier"
+                  ? "after:scale-x-100 after:opacity-100 after:z-20"
+                  : ""
                 }`}
             >
               <span className="d-none d-md-inline">Empresa</span>

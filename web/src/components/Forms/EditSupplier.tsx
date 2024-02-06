@@ -76,7 +76,7 @@ export default function VerifySupplier() {
 
     const res = await getCompanyData(companyLogin.email);
     console.log("Company", res.data);
-    
+
 
     formik.setFieldValue("rfc", res.data.rfc);
     formik.setFieldValue("razonSocial", res.data.razonSocial);
@@ -134,90 +134,93 @@ export default function VerifySupplier() {
       className="flex items-center justify-center h-full"
       onSubmit={formik.handleSubmit}
     >
-      <div className="row mb-15px w-2/6 bg-white shadow-lg mx-auto p-8 rounded-xl">
-        <div className="mb-10px">
-          <label className="form-label mb-24">RFC</label>
-          <div className="mt-5px">
-            <input
-              type="text"
-              className="form-control mb-5px w-full"
-              placeholder="RFC"
-              id="rfc"
-              name="rfc"
-              onChange={
-                formik.handleChange
-              }
-              value={formik.values.rfc}
-              disabled={true}
-            />
-          </div>
+      <div className="row  w-7/12 bg-white shadow-lg mx-auto p-8 rounded-xl">
+        <div className="mb-10px grid grid-cols-2 gap-10">
+          <div>
+            <label className="form-label mb-24">RFC</label>
+            <div className="mt-5px">
+              <input
+                type="text"
+                className="form-control mb-5px w-full"
+                placeholder="RFC"
+                id="rfc"
+                name="rfc"
+                onChange={
+                  formik.handleChange
+                }
+                value={formik.values.rfc}
+                disabled={true}
+              />
+            </div>
 
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.rfc}
-          </span>
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.rfc}
+            </span>
+          </div>
+          <div>
+            <label className="form-label mb-24">Razón Social</label>
+            <div className="mt-5px">
+              <input
+                type="text"
+                className="form-control mb-5px w-full"
+                placeholder="Razón Social"
+                value={formik.values.razonSocial}
+                onChange={formik.handleChange}
+                name="razonSocial"
+                id="razonSocial"
+                disabled={true}
+              />
+            </div>
+
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.razonSocial}
+            </span>
+          </div>
         </div>
 
-        <div className="mb-10px">
-          <label className="form-label mb-24">Razón Social</label>
-          <div className="mt-5px">
-            <input
-              type="text"
-              className="form-control mb-5px w-full"
-              placeholder="Razón Social"
-              value={formik.values.razonSocial}
-              onChange={formik.handleChange}
-              name="razonSocial"
-              id="razonSocial"
-              disabled={true}
-            />
+        <div className="mb-10px grid grid-cols-2 gap-10">
+          <div>
+            <label className="form-label mb-24">Email</label>
+            <div className="mt-5px">
+              <input
+                type="email"
+                className="form-control w-full"
+                placeholder="email"
+                id="email"
+                name="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+              />
+            </div>
+
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.rfc && formik.touched.rfc
+                ? formik.errors.rfc
+                : null}
+            </span>
           </div>
 
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.razonSocial}
-          </span>
-        </div>
+          <div>
+            <label className="form-label mb-24 ">Código Postal</label>
+            <div className="mt-5px">
+              <input
+                type="text"
+                className="form-control mb-5px w-full"
+                placeholder="Código Postal"
+                value={formik.values.codigoPostal}
+                onChange={formik.handleChange}
+                name="codigoPostal"
+                id="codigoPostal"
+              />
+            </div>
 
-        <div className="mb-10px">
-          <label className="form-label mb-24">Email</label>
-          <div className="mt-5px">
-            <input
-              type="email"
-              className="form-control w-full"
-              placeholder="email"
-              id="email"
-              name="email"
-              onChange={formik.handleChange}
-              value={formik.values.email}
-            />
+            <span className="text-xs text-red-500 italic" id="rfc-helper-text">
+              {formik.errors.codigoPostal}
+            </span>
           </div>
-
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.rfc && formik.touched.rfc
-              ? formik.errors.rfc
-              : null}
-          </span>
-
-
         </div>
 
-        <div className="mb-10px">
-          <label className="form-label mb-24 ">Código Postal</label>
-          <div className="mt-5px">
-            <input
-              type="text"
-              className="form-control mb-5px w-full"
-              placeholder="Código Postal"
-              value={formik.values.codigoPostal}
-              onChange={formik.handleChange}
-              name="codigoPostal"
-              id="codigoPostal"
-            />
-          </div>
 
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.codigoPostal}
-          </span>
-        </div>
 
         <div className="mb-20px">
           <label className="form-label mb-24">Régimen Fiscal</label>

@@ -65,7 +65,7 @@ export default function LoginSupplier() {
       onSubmit={formik.handleSubmit}
     >
       <div
-        className="row mb-15px w-2/6
+        className="row w-2/6
           bg-white
           shadow-lg
           mx-auto p-8

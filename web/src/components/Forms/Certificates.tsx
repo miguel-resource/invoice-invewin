@@ -71,7 +71,7 @@ export default function CertificatesForm() {
       onSubmit={formik.handleSubmit}
     >
       <div
-        className="row mb-15px w-12/12
+        className="row w-12/12
         bg-white
         shadow-lg
         mx-auto p-8

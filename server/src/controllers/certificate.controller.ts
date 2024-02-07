@@ -5,6 +5,8 @@ import UserController from "./user.controller";
 import { User } from "../types/User";
 import { InvewinController } from "./invewin.controller";
 import { v4 as uuid } from "uuid";
+import CryptoJS from "crypto-js";
+
 const http = axios.create({
   baseURL: process.env.INVEWIN_API_URL,
 });
@@ -21,7 +23,7 @@ namespace CerfificatesController {
       userName,
       user.empresaId
     );
-    console.log(accessToken);
+  
 
     const data = await http.get(
       process.env.INVEWIN_API_URL +
@@ -43,6 +45,17 @@ namespace CerfificatesController {
       return;
     }
 
+    // convert string base64 to file
+    console.log("DATA", data.data);
+    const certificate = Buffer.from(data.data[0].certificado, "base64");
+    const privateKey = Buffer.from(data.data[0].llavePrivada, "base64");
+
+    console.log("CERTIFICATE", certificate);
+    console .log("PRIVATE KEY", privateKey);
+
+    data.data[0].certificado = certificate;
+    data.data[0].llavePrivada = privateKey;
+
     ctx.status = 200;
     ctx.body = data.data;
   }
@@ -61,6 +74,11 @@ namespace CerfificatesController {
       userName,
       user.empresaId
     );
+
+    // encrypt the password of the certificate
+    const passwordCertificateEncrypted = CryptoJS.AES.encrypt(passwordCertificate, process.env.CERTIFICATES_SECRET).toString();
+
+    console.log("PASSWORD ENCRYPTED", passwordCertificateEncrypted);
 
     await http.post(
       process.env.INVEWIN_API_URL +

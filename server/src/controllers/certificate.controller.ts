@@ -23,7 +23,7 @@ namespace CerfificatesController {
       userName,
       user.empresaId
     );
-  
+
 
     const data = await http.get(
       process.env.INVEWIN_API_URL +
@@ -45,16 +45,20 @@ namespace CerfificatesController {
       return;
     }
 
-    // convert string base64 to file
-    console.log("DATA", data.data);
     const certificate = Buffer.from(data.data[0].certificado, "base64");
     const privateKey = Buffer.from(data.data[0].llavePrivada, "base64");
 
     console.log("CERTIFICATE", certificate);
-    console .log("PRIVATE KEY", privateKey);
+    console.log("PRIVATE KEY", privateKey);
 
     data.data[0].certificado = certificate;
     data.data[0].llavePrivada = privateKey;
+
+    // decrypt the password of the certificate
+    const passwordCertificateDecrypted = CryptoJS.AES.decrypt(data.data[0].password, process.env.CERTIFICATES_SECRET || "").toString(CryptoJS.enc.Utf8);
+
+    data.data[0].password = passwordCertificateDecrypted;
+
 
     ctx.status = 200;
     ctx.body = data.data;
@@ -76,9 +80,9 @@ namespace CerfificatesController {
     );
 
     // encrypt the password of the certificate
-    const passwordCertificateEncrypted = CryptoJS.AES.encrypt(passwordCertificate, process.env.CERTIFICATES_SECRET).toString();
+    const passwordCertificateEncrypted = CryptoJS.AES.encrypt(passwordCertificate, process.env.CERTIFICATES_SECRET || "").toString();
 
-    console.log("PASSWORD ENCRYPTED", passwordCertificateEncrypted);
+
 
     await http.post(
       process.env.INVEWIN_API_URL +
@@ -87,11 +91,11 @@ namespace CerfificatesController {
       "/certificadoscsd",
       {
         serieFacturacion: serieInvoice,
-        folioFacturacion: folioInvoice,
+        folioFacturacion: parseInt(folioInvoice),
         empresaId: user.empresaId,
         certificado: certificateBase64,
         llavePrivada: privateKeyBase64,
-        password: passwordCertificate
+        password: passwordCertificateEncrypted,
       },
       {
         headers: {
@@ -99,6 +103,7 @@ namespace CerfificatesController {
         },
       }
     ).catch((error) => {
+      console.log("ERROR INFO", error.response);
       console.log("ERROR", error.response.data);
     }).then((response: any) => {
       console.log("RESPONSE", response);

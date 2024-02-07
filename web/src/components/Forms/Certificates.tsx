@@ -11,8 +11,6 @@ export default function CertificatesForm() {
   const loginCompany = useSelector((state: any) => state.loginCompany);
 
   const [isUpdating, setIsUpdating] = useState(false);
-
-
   const formik = useFormik({
     initialValues: CertificateInitial,
     validateOnChange: true,
@@ -200,7 +198,7 @@ export default function CertificatesForm() {
           <label className="form-label mb-2">Folio fiscal</label>
           <input
             className="form-control"
-            type="text"
+            type="number"
             name="folio"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

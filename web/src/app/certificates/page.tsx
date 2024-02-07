@@ -13,7 +13,7 @@ export default function CertificatePage() {
         className="panel h-full w-full"
         data-sortable-id="form-stuff-1"
       >
-        <section className="m-auto w-1/2">
+        <section className="m-auto w-9/12">
           <div className="panel-body flex flex-row justify-center gap-10 items-center pb-0 w-full">
             <CertificatesForm />
           </div>

@@ -25,8 +25,11 @@ export default function TableGrid() {
     doc.setFillColor(0, 0, 0)
     doc.setFontSize(14);
  
-    doc.rect(0, 0, 210, 40, "F");
-    doc.text("Your Company Name", 10, 20);
+    // doc.rect(0, 0, 210, 40, "F");
+    doc.text(data.companyName, 10, 20);
+
+    doc.setFontSize(10);
+    doc.text(data.emailCompany, 10, 30);
 
     const gridWidth = 90;
     const gridHeight = 20;
@@ -186,6 +189,8 @@ export default function TableGrid() {
                   <button
                     onClick={() => showDataPDF(
                       {
+                        companyName: company.razonSocial,
+                        emailCompany: company.email,
                         date: params.row.date,
                         serie: params.row.serie,
                         folio: params.row.folio,

@@ -3,6 +3,7 @@
 import SimpleInvoice from "@/components/Forms/SimpleInvoice";
 import dynamic from "next/dynamic";
 
+
 const MainWrapper = dynamic(() => import("@/components/MainWrapper/layaout"), {
   ssr: false,
 });

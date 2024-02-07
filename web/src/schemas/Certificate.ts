@@ -4,6 +4,8 @@ export const CertificateInitial = {
   key: "",
   cer: "",
   password: "",
+  serie: "",
+  folio: "",
 };
 
 export const CertificateSchema = Yup.object().shape({

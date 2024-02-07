@@ -24,6 +24,7 @@
     "multer": "^1.4.5-lts.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3",
+    "uuidv4": "^6.2.13",
     "validate-rfc": "^2.0.3"
   },
   "devDependencies": {

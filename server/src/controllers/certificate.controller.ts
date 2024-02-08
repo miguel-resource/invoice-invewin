@@ -12,7 +12,6 @@ const http = axios.create({
 });
 
 namespace CerfificatesController {
-
   export async function getCertificates(ctx: any) {
     const { userName, password } = ctx.request.body;
 
@@ -57,7 +56,7 @@ namespace CerfificatesController {
       ctx.body = { message: "Error" };
       return;
     }
-  
+
     const certificate = Buffer.from(data.data[0].certificado, "base64");
     const privateKey = Buffer.from(data.data[0].llavePrivada, "base64");
 
@@ -69,8 +68,10 @@ namespace CerfificatesController {
       process.env.CERTIFICATES_SECRET || ""
     ).toString(CryptoJS.enc.Utf8);
 
-
-    data.data[0].password = passwordCertificateDecrypted.replace(/[^a-zA-Z0-9]/g, "");
+    data.data[0].password = passwordCertificateDecrypted.replace(
+      /[^a-zA-Z0-9]/g,
+      ""
+    );
 
     ctx.status = 200;
     ctx.body = data.data;
@@ -135,6 +136,63 @@ namespace CerfificatesController {
   }
 
   export async function updateCertificates(ctx: any) {
+    const {
+      passwordCertificate,
+      serieInvoice,
+      folioInvoice,
+      userName,
+      password,
+      certificateId,
+    } = ctx.request.body;
+    const { certificate, privateKey } = ctx.request.files;
+
+    const certificateBase64 = certificate[0].buffer.toString("base64");
+    const privateKeyBase64 = privateKey[0].buffer.toString("base64");
+
+    const user: User = await UserController.getUser(userName);
+    const accessToken = await InvewinController.authCustom(
+      password,
+      userName,
+      user.empresaId
+    );
+
+    const passwordCertificateEncrypted = CryptoJS.AES.encrypt(
+      JSON.stringify(passwordCertificate),
+      process.env.CERTIFICATES_SECRET || ""
+    ).toString();
+    console.log("PASSWORD ENCRYPTED", passwordCertificateEncrypted);
+
+    await http
+      .put(
+        process.env.INVEWIN_API_URL +
+          "/empresas/" +
+          user.empresaId +
+          "/certificadoscsd/" +
+          certificateId,
+
+        {
+          serieFacturacion: serieInvoice,
+          folioFacturacion: parseInt(folioInvoice),
+          empresaId: user.empresaId,
+          certificado: certificateBase64,
+          llavePrivada: privateKeyBase64,
+          password: passwordCertificateEncrypted,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .catch((error) => {
+        console.log("ERROR INFO", error.response);
+        console.log("ERROR", error.response.data);
+      })
+      .then((response: any) => {
+        console.log("RESPONSE", response);
+
+        ctx.status = 200;
+      });
   }
 }
 

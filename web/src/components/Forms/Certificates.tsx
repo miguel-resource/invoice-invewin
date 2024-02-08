@@ -15,8 +15,9 @@ export default function CertificatesForm() {
     "success"
   );
   const [open, setOpen] = useState(false);
-
   const [isUpdating, setIsUpdating] = useState(false);
+  const [dataIsChanged, setDataIsChanged] = useState(false);
+
   const formik = useFormik({
     initialValues: CertificateInitial,
     validateOnChange: true,
@@ -66,17 +67,36 @@ export default function CertificatesForm() {
     );
 
     if (res.data && res.data.length > 0) {
-      formik.setFieldValue("key", res.data[0].key);
-      formik.setFieldValue("cer", res.data[0].cer);
+      formik.setFieldValue("key", res.data[0].llavePrivada);
+      formik.setFieldValue("cer", res.data[0].certificado);
       formik.setFieldValue("password", res.data[0].password);
       formik.setFieldValue("serie", res.data[0].serieFacturacion);
       formik.setFieldValue("folio", res.data[0].folioFacturacion);
+
+      const key = new File([res.data[0].llavePrivada], "key");
+      const cer = new File([res.data[0].certificado], "cer");
+
+      formik.setFieldValue("key", key);
+      formik.setFieldValue("cer", cer);
+
       setIsUpdating(true);
       return;
     }
 
     setIsUpdating(false);
   };
+
+  const handleVerifyIsChanging = () => {
+    if (
+      formik.validateOnChange
+    ) {
+      setDataIsChanged(true);
+    }
+  };
+
+  useLayoutEffect(() => {
+    handleVerifyIsChanging();
+  }, [formik.values]);
 
   useLayoutEffect(() => {
     if (!company.rfc) {
@@ -132,7 +152,7 @@ export default function CertificatesForm() {
               {formik.values.key && (
                 <div className="flex flex-row justify-center items-center gap-4 mt-4">
                   <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
-                    {/* {formik.values.key.split("\\")[2]} */}
+                    {new File([formik.values.key], "Llave privada").name}
                   </p>
                   <button
                     type="button"
@@ -166,7 +186,7 @@ export default function CertificatesForm() {
               {formik.values.cer && (
                 <div className="flex flex-row justify-center items-center gap-4 mt-4">
                   <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
-                    {/* {formik.values.cer.split("\\")[2]} */}
+                    {new File([formik.values.cer], "Certificado").name}
                   </p>
                   <button
                     type="button"
@@ -225,9 +245,15 @@ export default function CertificatesForm() {
           <button
             type="submit"
             className={
-              formik.values.key && formik.values.cer && formik.values.password
+              formik.values.key &&
+              formik.values.cer &&
+              formik.values.password &&
+              formik.values.serie &&
+              formik.values.folio &&
+              formik.dirty &&
+              dataIsChanged
                 ? "btn btn-primary w-1/2"
-                : "btn disabled w-1/2"
+                : "btn btn-primary w-1/2"
             }
             disabled={formik.isSubmitting}
           >

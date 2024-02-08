@@ -115,8 +115,6 @@ export default function VerifySupplier() {
   useEffect(() => {
     handleGetCatalogs();
     handleGetCompany();
-
-
   }, []);
 
   useLayoutEffect(() => {

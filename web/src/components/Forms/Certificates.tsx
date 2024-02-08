@@ -4,11 +4,17 @@ import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import CommonAlert from "../common/Alert";
 
 export default function CertificatesForm() {
   const router = useRouter();
   const company = useSelector((state: any) => state.company);
   const loginCompany = useSelector((state: any) => state.loginCompany);
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState<"success" | "error" | "warning" | "info">(
+    "success"
+  );
+  const [open, setOpen] = useState(false);
 
   const [isUpdating, setIsUpdating] = useState(false);
   const formik = useFormik({
@@ -26,7 +32,6 @@ export default function CertificatesForm() {
       formData.append("userName", loginCompany.email);
       formData.append("password", loginCompany.password);
 
-
       if (isUpdating) {
         // updateCertificate(loginCompany.email, loginCompany.password, formData);
         console.log("updating", formData.values());
@@ -34,11 +39,23 @@ export default function CertificatesForm() {
         // createCertificate(loginCompany.email, loginCompany.password, formData);
         console.log("creating", formData.values());
 
-        createCertificate(
-          formData
-        );
-      }
+        createCertificate(formData)
+          .then((res) => {
+            setMessage("Certificado guardado correctamente");
+            setType("success");
+            setOpen(true);
 
+            setTimeout(() => {
+              setOpen(false);
+              router.push("/invoices");
+            }, 2000);
+          })
+          .catch((err) => {
+            setMessage("Error al guardar el certificado");
+            setType("error");
+            setOpen(true);
+          });
+      }
     },
   });
 
@@ -84,7 +101,6 @@ export default function CertificatesForm() {
         rounded-xl
       "
       >
-
         {!isUpdating && !formik.values.key && !formik.values.cer && (
           <p
             className="text-center text-red-600 italic text-sm
@@ -105,7 +121,6 @@ export default function CertificatesForm() {
               name="key"
               id="key"
               onChange={(e) => {
-
                 formik.setFieldValue(
                   "key",
                   e.target.files ? e.target.files[0] : ""
@@ -143,7 +158,6 @@ export default function CertificatesForm() {
                   e.target.files ? e.target.files[0] : ""
                 );
               }}
-
               accept=".cer"
             />
 
@@ -221,6 +235,13 @@ export default function CertificatesForm() {
           </button>
         </div>
       </div>
+
+      <CommonAlert
+        message={message}
+        type={type}
+        onClose={() => setOpen(false)}
+        open={open}
+      />
     </form>
   );
 }

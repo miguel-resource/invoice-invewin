@@ -1,15 +1,22 @@
 import { CertificateInitial } from "@/schemas/Certificate";
-import { createCertificate, getCertificates } from "@/services/Certificates";
+import {
+  createCertificate,
+  getCertificates,
+  updateCertificate,
+} from "@/services/Certificates";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CommonAlert from "../common/Alert";
+import { setCertificates } from "@/redux/certificatesSlice";
 
 export default function CertificatesForm() {
   const router = useRouter();
   const company = useSelector((state: any) => state.company);
   const loginCompany = useSelector((state: any) => state.loginCompany);
+  const certificates = useSelector((state: any) => state.certificates);
+
   const [message, setMessage] = useState("");
   const [type, setType] = useState<"success" | "error" | "warning" | "info">(
     "success"
@@ -17,6 +24,8 @@ export default function CertificatesForm() {
   const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [dataIsChanged, setDataIsChanged] = useState(false);
+
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: CertificateInitial,
@@ -34,28 +43,62 @@ export default function CertificatesForm() {
       formData.append("password", loginCompany.password);
 
       if (isUpdating) {
-        // updateCertificate(loginCompany.email, loginCompany.password, formData);
-        console.log("updating", formData.values());
-      } else {
-        // createCertificate(loginCompany.email, loginCompany.password, formData);
-        console.log("creating", formData.values());
+        const data = new FormData();
+        if (values.key !== certificates.llavePrivada) {
+          data.append("privateKey", values.key);
+        }
+        if (values.cer !== certificates.certificado) {
+          data.append("certificate", values.cer);
+        }
+        if (values.password !== certificates.password) {
+          data.append("passwordCertificate", values.password);
+        }
+        if (values.serie !== certificates.serieFacturacion) {
+          data.append("serieInvoice", values.serie);
+        }
+        if (values.folio !== certificates.folioFacturacion) {
+          data.append("folioInvoice", values.folio);
+        }
 
-        createCertificate(formData)
-          .then((res) => {
-            setMessage("Certificado guardado correctamente");
-            setType("success");
-            setOpen(true);
+        if (data) {
+          data.append("id", certificates.id);
+          data.append("userName", loginCompany.email);
+          data.append("password", loginCompany.password);
 
-            setTimeout(() => {
-              setOpen(false);
-              router.push("/invoices");
-            }, 2000);
-          })
-          .catch((err) => {
-            setMessage("Error al guardar el certificado");
-            setType("error");
-            setOpen(true);
-          });
+          updateCertificate(data)
+            .then((res) => {
+              setMessage("Certificado actualizado correctamente");
+              setType("success");
+              setOpen(true);
+
+              setTimeout(() => {
+                setOpen(false);
+                router.push("/invoices");
+              }, 2000);
+            })
+            .catch((err) => {
+              setMessage("Error al actualizar el certificado");
+              setType("error");
+              setOpen(true);
+            });
+        } else {
+          createCertificate(formData)
+            .then((res) => {
+              setMessage("Certificado guardado correctamente");
+              setType("success");
+              setOpen(true);
+
+              setTimeout(() => {
+                setOpen(false);
+                router.push("/invoices");
+              }, 2000);
+            })
+            .catch((err) => {
+              setMessage("Error al guardar el certificado");
+              setType("error");
+              setOpen(true);
+            });
+        }
       }
     },
   });
@@ -79,6 +122,8 @@ export default function CertificatesForm() {
       formik.setFieldValue("key", key);
       formik.setFieldValue("cer", cer);
 
+      dispatch(setCertificates(res.data[0]));
+
       setIsUpdating(true);
       return;
     }
@@ -87,9 +132,7 @@ export default function CertificatesForm() {
   };
 
   const handleVerifyIsChanging = () => {
-    if (
-      formik.validateOnChange
-    ) {
+    if (formik.validateOnChange) {
       setDataIsChanged(true);
     }
   };

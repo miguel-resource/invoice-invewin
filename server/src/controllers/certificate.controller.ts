@@ -142,25 +142,40 @@ namespace CerfificatesController {
       folioInvoice,
       userName,
       password,
-      certificateId,
+      id,
     } = ctx.request.body;
     const { certificate, privateKey } = ctx.request.files;
-
-    const certificateBase64 = certificate[0].buffer.toString("base64");
-    const privateKeyBase64 = privateKey[0].buffer.toString("base64");
-
     const user: User = await UserController.getUser(userName);
+
     const accessToken = await InvewinController.authCustom(
       password,
       userName,
       user.empresaId
     );
 
+    const getCertificate = await http.get(
+      process.env.INVEWIN_API_URL + "/empresas/" + user.empresaId
+       + "/certificadoscsd",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    ).then((response: any) => {
+      return response.data[0];
+    }
+    );
+
+
+    const certificateBase64 = certificate ? certificate[0].buffer.toString("base64") : getCertificate.certificado;
+    const privateKeyBase64 = privateKey ? privateKey[0].buffer.toString("base64") : getCertificate.llavePrivada;
+    console.log("CERTIFICATE", certificateBase64);
+    console.log("PRIVATE KEY", privateKeyBase64);
+
     const passwordCertificateEncrypted = CryptoJS.AES.encrypt(
       JSON.stringify(passwordCertificate),
       process.env.CERTIFICATES_SECRET || ""
     ).toString();
-    console.log("PASSWORD ENCRYPTED", passwordCertificateEncrypted);
 
     await http
       .put(
@@ -168,15 +183,14 @@ namespace CerfificatesController {
           "/empresas/" +
           user.empresaId +
           "/certificadoscsd/" +
-          certificateId,
-
+          id,
         {
-          serieFacturacion: serieInvoice,
-          folioFacturacion: parseInt(folioInvoice),
-          empresaId: user.empresaId,
+          serieFacturacion: serieInvoice ? serieInvoice : getCertificate.serieFacturacion,
+          folioFacturacion: parseInt(folioInvoice) ? parseInt(folioInvoice) : getCertificate.folioFacturacion,
+          empresaId: user.empresaId ? user.empresaId : getCertificate.empresaId,
           certificado: certificateBase64,
           llavePrivada: privateKeyBase64,
-          password: passwordCertificateEncrypted,
+          password: passwordCertificateEncrypted ? passwordCertificateEncrypted : getCertificate.password,
         },
         {
           headers: {
@@ -193,6 +207,50 @@ namespace CerfificatesController {
 
         ctx.status = 200;
       });
+
+
+
+    // const certificateBase64 = certificate[0].buffer.toString("base64");
+    // const privateKeyBase64 = privateKey[0].buffer.toString("base64");
+
+
+    // const passwordCertificateEncrypted = CryptoJS.AES.encrypt(
+    //   JSON.stringify(passwordCertificate),
+    //   process.env.CERTIFICATES_SECRET || ""
+    // ).toString();
+    // console.log("PASSWORD ENCRYPTED", passwordCertificateEncrypted);
+
+    // await http
+    //   .put(
+    //     process.env.INVEWIN_API_URL +
+    //       "/empresas/" +
+    //       user.empresaId +
+    //       "/certificadoscsd/" +
+    //       certificateId,
+
+    //     {
+    //       serieFacturacion: serieInvoice,
+    //       folioFacturacion: parseInt(folioInvoice),
+    //       empresaId: user.empresaId,
+    //       certificado: certificateBase64,
+    //       llavePrivada: privateKeyBase64,
+    //       password: passwordCertificateEncrypted,
+    //     },
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${accessToken}`,
+    //       },
+    //     }
+    //   )
+    //   .catch((error) => {
+    //     console.log("ERROR INFO", error.response);
+    //     console.log("ERROR", error.response.data);
+    //   })
+    //   .then((response: any) => {
+    //     console.log("RESPONSE", response);
+
+    //     ctx.status = 200;
+    //   });
   }
 }
 

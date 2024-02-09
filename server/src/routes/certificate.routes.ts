@@ -13,6 +13,9 @@ router.post(path + "/create", upload.fields([
     { name: "certificate", maxCount: 1 },
     { name: "privateKey", maxCount: 1 }
 ]), CertificateController.postCertificates);
-router.post(path + "/update", koaBody(), CertificateController.updateCertificates);
+router.post(path + "/update", upload.fields([
+    { name: "certificate", maxCount: 1 },
+    { name: "privateKey", maxCount: 1 }
+]), CertificateController.updateCertificates);
 
 export const certificateRouter = router;

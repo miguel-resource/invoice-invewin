@@ -3,6 +3,7 @@ import saleReducer from "./saleSlice";
 import clientReducer from "./clientSlice";
 import companyReducer from "./companySlice";
 import loginCompanyReducer from "./loginCompanySlice";
+import certificatesReducer from "./certificatesSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     client: clientReducer,
     company: companyReducer,
     loginCompany: loginCompanyReducer,
+    certificates: certificatesReducer,
   },
 });
 

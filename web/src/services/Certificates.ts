@@ -28,3 +28,7 @@ export const getCertificates = (userName: string, password: string) => {
 export const createCertificate = (formData: FormData) => {
     return http.post(path + "/create", formData);
 }
+
+export const updateCertificate = (formData: FormData) => {
+    return http.post(path + "/update", formData);
+}

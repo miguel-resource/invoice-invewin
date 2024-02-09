@@ -29,10 +29,8 @@ namespace StampBillController {
                 }
             },
         ).catch((error) => {
-            console.log("ERROR en stampBill", error);
-        })
-
-        console.log("res", res);
+            ctx.throw(400, error.response.data.message);
+        });
 
         ctx.status = 200;
         ctx.body = accessToken;

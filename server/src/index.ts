@@ -11,6 +11,8 @@ import { catalogRouter } from "./routes/catalog.routes";
 import { clientOnlineRouter } from "./routes/clientOnline.routes";
 import { companyRouter } from "./routes/company.routes";
 import { certificateRouter } from "./routes/certificate.routes";
+import { stampBillRouter } from './routes/stampBill.routes';
+
 
 const app = new koa();
 
@@ -23,6 +25,7 @@ app.use(catalogRouter.routes());
 app.use(clientOnlineRouter.routes());
 app.use(companyRouter.routes());
 app.use(certificateRouter.routes());
+app.use(stampBillRouter.routes());
 
 app.listen(
   process.env.PORT

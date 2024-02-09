@@ -57,14 +57,14 @@ export const Stamp = () => {
             setOpen(true);
             setIsCreatingClient(true);
 
-
-
             setTimeout(() => {
               setIsSearchingRFC(false);
               setShowForms(true);
             }, 2000);
           } else {
-            setMessage("RFC cargado correctamente, verifica tus datos fiscales antes de timbrar");
+            setMessage(
+              "RFC cargado correctamente, verifica tus datos fiscales antes de timbrar"
+            );
             setType("success");
             setOpen(true);
             setIsCreatingClient(false);
@@ -157,8 +157,14 @@ export const Stamp = () => {
     },
   });
 
+  useLayoutEffect(() => {
+    if (sales.length > 0 && !client) {
+      router.push("/load-ticket");
+    }
+  }, [sales]);
+
   return (
-    <div className="flex items-center justify-center w-full h-full">
+    <div className="flex items-center justify-center w-full  py-32">
       <div
         className="row mb-15px w-10/12 
           bg-white
@@ -187,9 +193,14 @@ export const Stamp = () => {
         <TicketsGrid formik={formikUUID} />
         <section className="flex flex-row items-center justify-center gap-36 w-full ">
           <TotalInvoice />
-          <ButtonStampInvoice isValidToStamp={
-            isValidToStamp || formikEditSupplier.isValid && formikEditSupplier.dirty && sales.length > 0
-          } />
+          <ButtonStampInvoice
+            isValidToStamp={
+              isValidToStamp ||
+              (formikEditSupplier.isValid &&
+                formikEditSupplier.dirty &&
+                sales.length > 0)
+            }
+          />
         </section>
       </div>
 

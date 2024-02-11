@@ -137,7 +137,7 @@ export default function AmountDetails() {
             borderRadius: "10px",
           }}
         >
-          <EditClient onClose={handleClose} />
+          {/* <EditClient onClose={handleClose} /> */}
         </Box>
       </Modal>
     </div>

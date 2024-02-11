@@ -194,31 +194,7 @@ export default function CreateCustomer() {
           </span>
         </div>
 
-        <div className="mb-10px">
-          <label className="form-label mb-24">Uso de CFDI</label>
-          <div className="mt-5px">
-            <select
-              value={formik.values.usoCfdi}
-              className="form-control mb-5px w-full"
-              name="usoCfdi"
-              id="usoCfdi"
-              onChange={formik.handleChange}
-            >
-              <option value="">Selecciona una opción</option>
-              {catalogUseCFDI.map((item: any) => (
-                <option key={item.clave} value={item.clave}>
-                  {item.descripcion}
-                </option>
-              ))}
 
-              {/* <p>{formik.values.regimenFiscal}</p> */}
-            </select>
-          </div>
-
-          <span className="text-xs text-red-500 italic" id="rfc-helper-text">
-            {formik.errors.usoCfdi}
-          </span>
-        </div>
 
         {/* button */}
         <div className="flex justify-center mt-8">

@@ -3,6 +3,8 @@
 import Header from "@/components/common/Header";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
+import Head from "next/head";
+import { Metadata } from "next";
 
 export default function RootLayout({
   children,
@@ -12,27 +14,14 @@ export default function RootLayout({
   return (
     <Provider store={store}>
       <html lang="en">
-        <head>
+        <Head>
           <title>Administrator</title>
-          <link
-            href="./../../../public/admin/css/app.min.css"
-            rel="stylesheet"
-          />
-          <link
-            href="./../../../public/admin/css/vendor.min.css"
-            rel="stylesheet"
-          />
-        </head>
-        <body
-        >
-          <div
-            className="h-screen bg-slate-100"
-          >
-
-          <Header />
-          {children}
+        </Head>
+        <body>
+          <div className="h-screen bg-slate-100">
+            <Header />
+            {children}
           </div>
-
         </body>
       </html>
     </Provider>

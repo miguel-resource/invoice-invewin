@@ -9,3 +9,4 @@ temp/
 public/
 
 package-lock.json
+.vercel

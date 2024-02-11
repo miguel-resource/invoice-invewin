@@ -1,5 +1,5 @@
 import axios from "axios";
-import Koa from "koa";
+
 import qs from "qs";
 
 const headers = {

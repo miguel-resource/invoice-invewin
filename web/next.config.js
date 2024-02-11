@@ -8,7 +8,10 @@ const nextConfig = {
                 permanent: true,
             },
         ]
-    }
+    },
+    sassOptions: {
+        includePaths: ['./src/styles'],
+    },
 }
 
 module.exports = nextConfig

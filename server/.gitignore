@@ -6,7 +6,7 @@ build/
 temp/
 .env
 
-public/
+
 
 package-lock.json
 .vercel

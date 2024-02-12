@@ -1,5 +1,5 @@
 import { getAllInvoices } from "@/services/Company";
-import { Chip, Tooltip } from "@mui/material";
+import { Chip, CircularProgress, Tooltip } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -7,24 +7,25 @@ import { useSelector } from "react-redux";
 import { faker } from "@faker-js/faker";
 import { jsPDF } from "jspdf";
 
-
 export default function TableGrid() {
   const router = useRouter();
   const company = useSelector((state: any) => state.company);
   const companyLogin = useSelector((state: any) => state.loginCompany);
+
+  const [progress, setProgress] = useState(0);
 
   // const [data, setData] = useState([]); // TODO: Change to real data
 
   const showDataPDF = (data: any) => {
     const doc = new jsPDF();
     doc.setProperties({
-      title: "Factura"
+      title: "Factura",
     });
 
-    // Header 
-    doc.setFillColor(0, 0, 0)
+    // Header
+    doc.setFillColor(0, 0, 0);
     doc.setFontSize(14);
- 
+
     // doc.rect(0, 0, 210, 40, "F");
     doc.text(data.companyName, 10, 20);
 
@@ -37,23 +38,46 @@ export default function TableGrid() {
     const topMargin = 70;
     doc.setLineWidth(0.3);
 
+    doc.setFont("sans-serif", "normal");
+    doc.text(
+      "Fecha: " + new Date(data.date).toLocaleDateString(),
+      leftMargin,
+      topMargin - 10
+    );
 
-    doc.setFont("sans-serif", "normal");  
-    doc.text("Fecha: " + new Date(data.date).toLocaleDateString()
-      , leftMargin, topMargin - 10);
-
-      // line
-      doc.line(leftMargin, topMargin, leftMargin + gridWidth * 2, topMargin); 
+    // line
+    doc.line(leftMargin, topMargin, leftMargin + gridWidth * 2, topMargin);
 
     // Fiscal data like a grid with 2 columns
     doc.text("Serie: " + data.serie, leftMargin, topMargin + gridHeight);
-    doc.text("Folio: " + data.folio, leftMargin + gridWidth, topMargin + gridHeight);
+    doc.text(
+      "Folio: " + data.folio,
+      leftMargin + gridWidth,
+      topMargin + gridHeight
+    );
 
-    doc.text("RFC Cliente: " + data.rfcClient, leftMargin, topMargin + gridHeight * 2);
-    doc.text("Razón Social: " + data.nameClient , leftMargin + gridWidth, topMargin + gridHeight * 2);
-    doc.line(leftMargin, topMargin + gridHeight * 3, leftMargin + gridWidth * 2, topMargin + gridHeight * 3);
-    
-    doc.text("Método de Pago: " + data.methodPayment, leftMargin, topMargin + gridHeight * 8);
+    doc.text(
+      "RFC Cliente: " + data.rfcClient,
+      leftMargin,
+      topMargin + gridHeight * 2
+    );
+    doc.text(
+      "Razón Social: " + data.nameClient,
+      leftMargin + gridWidth,
+      topMargin + gridHeight * 2
+    );
+    doc.line(
+      leftMargin,
+      topMargin + gridHeight * 3,
+      leftMargin + gridWidth * 2,
+      topMargin + gridHeight * 3
+    );
+
+    doc.text(
+      "Método de Pago: " + data.methodPayment,
+      leftMargin,
+      topMargin + gridHeight * 8
+    );
     // total with
     doc.setFontSize(20);
     doc.setFont("sans-serif", "bold");
@@ -67,7 +91,8 @@ export default function TableGrid() {
     }
   }, [company]);
 
-  const handleData = async () => { // TODO: Implement and discomment the useEffect
+  const handleData = async () => {
+    // TODO: Implement and discomment the useEffect
     const response = await getAllInvoices(
       companyLogin.email,
       companyLogin.password
@@ -100,127 +125,134 @@ export default function TableGrid() {
     count: 100,
   });
 
-
   useEffect(() => {
-    // handleData().then((res) => {
-    //   setData(res.data);
-    // });
-  }, []);
+    if (progress < 100) {
+      const interval = setInterval(() => {
+        setProgress((prev) => prev + 10);
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, [progress]);
 
   return (
-    <DataGrid
-      rows={data}
-      columns={[
-        {
-          field: "date",
-          headerName: "Fecha",
-          type: "date",
-          width: 130,
-          editable: false,
-          headerAlign: "center",
-          align: "center",
-        },
-        {
-          field: "serie",
-          headerName: "Serie",
-          width: 130,
-          editable: false,
-          headerAlign: "center",
-          align: "center",
-        },
-        {
-          field: "folio",
-          headerName: "Folio",
-          width: 300,
-          editable: false,
-          headerAlign: "center",
-          align: "center",
-        },
-        {
-          field: "rfcClient",
-          headerName: "RFC del Cliente",
-          width: 200,
-          editable: false,
-          headerAlign: "center",
-          align: "center",
-        },
-        {
-          field: "nameClient",
-          headerName: "Razón Social",
-          width: 300,
-          editable: false,
-          headerAlign: "center",
-          align: "center",
-        },
-        {
-          field: "total",
-          headerName: "Total",
-          width: 130,
-          editable: false,
-          headerAlign: "center",
-          align: "center",
-        },
-        {
-          field: "methodPayment",
-          headerName: "Método de Pago",
-          width: 130,
-          editable: false,
-          headerAlign: "center",
-          renderCell: (params: any) => {
-            return (
-              <Chip
-                label={params.value}
-                className=" text-slate-100"
-                variant="outlined"
-                color="success"
-              />
-            );
-          },
-        },
-        {
-          field: "actions",
-          headerName: "",
-          width: 470,
-          headerAlign: "center",
-          renderCell: (params: any) => {
-            return (
-              <div className="flex justify-center space-x-2 mx-auto">
-                <Tooltip title="Ver" arrow placement="right">
-                  <button
-                    onClick={() => showDataPDF(
-                      {
-                        companyName: company.razonSocial,
-                        emailCompany: company.email,
-                        date: params.row.date,
-                        serie: params.row.serie,
-                        folio: params.row.folio,
-                        rfcClient: params.row.rfcClient,
-                        nameClient: params.row.nameClient,
-                        total: params.row.total,
-                        methodPayment: params.row.methodPayment,
-                      }
-
-                    )}
-                    className="p-1 w-11 rounded-full  ">
-                    <i className="fa fa-eye text-slate-700"></i>
-                  </button>
-                </Tooltip>
-
-
-              </div>
-            );
-          },
-        },
-      ]}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 20,
-          },
-        },
-      }}
-      pageSizeOptions={[10, 20, 50, 100]}
-    />
-
+    <>
+      {progress < 100 ? (
+        <div className="flex items-center justify-center h-screen w-full">
+          <CircularProgress />
+        </div>
+      ) : (
+        <DataGrid
+          rows={data}
+          columns={[
+            {
+              field: "date",
+              headerName: "Fecha",
+              type: "date",
+              width: 130,
+              editable: false,
+              headerAlign: "center",
+              align: "center",
+            },
+            {
+              field: "serie",
+              headerName: "Serie",
+              width: 130,
+              editable: false,
+              headerAlign: "center",
+              align: "center",
+            },
+            {
+              field: "folio",
+              headerName: "Folio",
+              width: 300,
+              editable: false,
+              headerAlign: "center",
+              align: "center",
+            },
+            {
+              field: "rfcClient",
+              headerName: "RFC del Cliente",
+              width: 200,
+              editable: false,
+              headerAlign: "center",
+              align: "center",
+            },
+            {
+              field: "nameClient",
+              headerName: "Razón Social",
+              width: 300,
+              editable: false,
+              headerAlign: "center",
+              align: "center",
+            },
+            {
+              field: "total",
+              headerName: "Total",
+              width: 130,
+              editable: false,
+              headerAlign: "center",
+              align: "center",
+            },
+            {
+              field: "methodPayment",
+              headerName: "Método de Pago",
+              width: 130,
+              editable: false,
+              headerAlign: "center",
+              renderCell: (params: any) => {
+                return (
+                  <Chip
+                    label={params.value}
+                    className=" text-slate-100"
+                    variant="outlined"
+                    color="success"
+                  />
+                );
+              },
+            },
+            {
+              field: "actions",
+              headerName: "",
+              width: 470,
+              headerAlign: "center",
+              renderCell: (params: any) => {
+                return (
+                  <div className="flex justify-center space-x-2 mx-auto">
+                    <Tooltip title="Ver" arrow placement="right">
+                      <button
+                        onClick={() =>
+                          showDataPDF({
+                            companyName: company.razonSocial,
+                            emailCompany: company.email,
+                            date: params.row.date,
+                            serie: params.row.serie,
+                            folio: params.row.folio,
+                            rfcClient: params.row.rfcClient,
+                            nameClient: params.row.nameClient,
+                            total: params.row.total,
+                            methodPayment: params.row.methodPayment,
+                          })
+                        }
+                        className="p-1 w-11 rounded-full  "
+                      >
+                        <i className="fa fa-eye text-slate-700"></i>
+                      </button>
+                    </Tooltip>
+                  </div>
+                );
+              },
+            },
+          ]}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 20,
+              },
+            },
+          }}
+          pageSizeOptions={[10, 20, 50, 100]}
+        />
+      )}
+    </>
   );
 }

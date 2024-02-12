@@ -10,6 +10,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CommonAlert from "../common/Alert";
 import { setCertificates } from "@/redux/certificatesSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CertificatesForm() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function CertificatesForm() {
   const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [dataIsChanged, setDataIsChanged] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -151,166 +153,183 @@ export default function CertificatesForm() {
     getCertificate();
   }, [loginCompany]);
 
+  useEffect(() => {
+    if (progress < 100) {
+      const interval = setInterval(() => {
+        setProgress((prev) => prev + 10);
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, [progress]);
+
   return (
-    <form
-      className="flex items-center justify-center h-full"
-      onSubmit={formik.handleSubmit}
-    >
-      <div
-        className="row w-12/12
+    <>
+      {progress < 100 ? (
+        <div className="flex justify-center items-center w-full h-full">
+          <CircularProgress />
+        </div>
+      ) : (
+        <form
+          className="flex items-center justify-center h-full"
+          onSubmit={formik.handleSubmit}
+        >
+          <div
+            className="row w-12/12
         bg-white
         shadow-lg
         mx-auto p-8
         rounded-xl
       "
-      >
-        {!isUpdating && !formik.values.key && !formik.values.cer && (
-          <p
-            className="text-center text-red-600 italic text-sm
+          >
+            {!isUpdating && !formik.values.key && !formik.values.cer && (
+              <p
+                className="text-center text-red-600 italic text-sm
           mb-4
           "
-          >
-            <i className="fas fa-exclamation-triangle  mr-2"></i>
-            Agrega tus certificados para poder firmar tus facturas
-          </p>
-        )}
+              >
+                <i className="fas fa-exclamation-triangle  mr-2"></i>
+                Agrega tus certificados para poder firmar tus facturas
+              </p>
+            )}
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col w-full mb-4">
-            <label className="form-label mb-2">Llave privada</label>
-            <input
-              className="form-control"
-              type="file"
-              name="key"
-              id="key"
-              onChange={(e) => {
-                formik.setFieldValue(
-                  "key",
-                  e.target.files ? e.target.files[0] : ""
-                );
-              }}
-              accept=".key"
-            />
-            <section>
-              {formik.values.key && (
-                <div className="flex flex-row justify-center items-center gap-4 mt-4">
-                  <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
-                    {new File([formik.values.key], "Llave privada").name}
-                  </p>
-                  <button
-                    type="button"
-                    className="btn bg-red-500 border-none btn-sm"
-                    onClick={() => formik.setFieldValue("key", "")}
-                  >
-                    <i className="fas fa-trash-alt text-slate-50"></i>
-                  </button>
-                </div>
-              )}
-            </section>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col w-full mb-4">
+                <label className="form-label mb-2">Llave privada</label>
+                <input
+                  className="form-control"
+                  type="file"
+                  name="key"
+                  id="key"
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      "key",
+                      e.target.files ? e.target.files[0] : ""
+                    );
+                  }}
+                  accept=".key"
+                />
+                <section>
+                  {formik.values.key && (
+                    <div className="flex flex-row justify-center items-center gap-4 mt-4">
+                      <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
+                        {new File([formik.values.key], "Llave privada").name}
+                      </p>
+                      <button
+                        type="button"
+                        className="btn bg-red-500 border-none btn-sm"
+                        onClick={() => formik.setFieldValue("key", "")}
+                      >
+                        <i className="fas fa-trash-alt text-slate-50"></i>
+                      </button>
+                    </div>
+                  )}
+                </section>
+              </div>
+              <div className="flex flex-col w-full mb-4">
+                <label className="form-label mb-2">Certificado</label>
+                <input
+                  className="form-control"
+                  type="file"
+                  name="cer"
+                  id="cer"
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      "cer",
+                      e.target.files ? e.target.files[0] : ""
+                    );
+                  }}
+                  accept=".cer"
+                />
+
+                {/*  File preview */}
+                <section>
+                  {formik.values.cer && (
+                    <div className="flex flex-row justify-center items-center gap-4 mt-4">
+                      <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
+                        {new File([formik.values.cer], "Certificado").name}
+                      </p>
+                      <button
+                        type="button"
+                        className="btn bg-red-500 border-none btn-sm"
+                        onClick={() => formik.setFieldValue("cer", "")}
+                      >
+                        <i className="fas fa-trash-alt text-slate-50"></i>
+                      </button>
+                    </div>
+                  )}
+                </section>
+              </div>
+            </div>
+            {/* password */}
+            <div className="flex flex-col w-full mb-4">
+              <label className="form-label mb-2">Contraseña</label>
+              <input
+                className="form-control"
+                type="password"
+                name="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+              />
+            </div>
+
+            {/* serie fiscal */}
+            <div className="flex flex-col w-full mb-4">
+              <label className="form-label mb-2">Serie fiscal</label>
+              <input
+                className="form-control"
+                type="text"
+                name="serie"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.serie}
+                id="serie"
+              />
+            </div>
+
+            {/* folio fiscal */}
+            <div className="flex flex-col w-full mb-4">
+              <label className="form-label mb-2">Folio fiscal</label>
+              <input
+                className="form-control"
+                type="number"
+                name="folio"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.folio}
+                id="folio"
+              />
+            </div>
+
+            <div className="flex justify-center w-full mt-8">
+              <button
+                type="submit"
+                className={
+                  formik.values.key &&
+                  formik.values.cer &&
+                  formik.values.password &&
+                  formik.values.serie &&
+                  formik.values.folio &&
+                  formik.dirty &&
+                  dataIsChanged
+                    ? "btn btn-primary w-1/2"
+                    : "btn btn-primary w-1/2"
+                }
+                disabled={formik.isSubmitting}
+              >
+                {isUpdating ? "Actualizar" : "Guardar"}
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col w-full mb-4">
-            <label className="form-label mb-2">Certificado</label>
-            <input
-              className="form-control"
-              type="file"
-              name="cer"
-              id="cer"
-              onChange={(e) => {
-                formik.setFieldValue(
-                  "cer",
-                  e.target.files ? e.target.files[0] : ""
-                );
-              }}
-              accept=".cer"
-            />
 
-            {/*  File preview */}
-            <section>
-              {formik.values.cer && (
-                <div className="flex flex-row justify-center items-center gap-4 mt-4">
-                  <p className="text-sm text-slate-50 font-bold bg-slate-600 px-3 block p-1 rounded-md mb-0">
-                    {new File([formik.values.cer], "Certificado").name}
-                  </p>
-                  <button
-                    type="button"
-                    className="btn bg-red-500 border-none btn-sm"
-                    onClick={() => formik.setFieldValue("cer", "")}
-                  >
-                    <i className="fas fa-trash-alt text-slate-50"></i>
-                  </button>
-                </div>
-              )}
-            </section>
-          </div>
-        </div>
-        {/* password */}
-        <div className="flex flex-col w-full mb-4">
-          <label className="form-label mb-2">Contraseña</label>
-          <input
-            className="form-control"
-            type="password"
-            name="password"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.password}
+          <CommonAlert
+            message={message}
+            type={type}
+            onClose={() => setOpen(false)}
+            open={open}
           />
-        </div>
-
-        {/* serie fiscal */}
-        <div className="flex flex-col w-full mb-4">
-          <label className="form-label mb-2">Serie fiscal</label>
-          <input
-            className="form-control"
-            type="text"
-            name="serie"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.serie}
-            id="serie"
-          />
-        </div>
-
-        {/* folio fiscal */}
-        <div className="flex flex-col w-full mb-4">
-          <label className="form-label mb-2">Folio fiscal</label>
-          <input
-            className="form-control"
-            type="number"
-            name="folio"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.folio}
-            id="folio"
-          />
-        </div>
-
-        <div className="flex justify-center w-full mt-8">
-          <button
-            type="submit"
-            className={
-              formik.values.key &&
-              formik.values.cer &&
-              formik.values.password &&
-              formik.values.serie &&
-              formik.values.folio &&
-              formik.dirty &&
-              dataIsChanged
-                ? "btn btn-primary w-1/2"
-                : "btn btn-primary w-1/2"
-            }
-            disabled={formik.isSubmitting}
-          >
-            {isUpdating ? "Actualizar" : "Guardar"}
-          </button>
-        </div>
-      </div>
-
-      <CommonAlert
-        message={message}
-        type={type}
-        onClose={() => setOpen(false)}
-        open={open}
-      />
-    </form>
+        </form>
+      )}
+    </>
   );
 }

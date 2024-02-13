@@ -1,41 +1,43 @@
-import axios from 'axios';
+import axios from "axios";
+import SWSapienController from "./swSapien.controller";
 
-import SWSapienController from "./swSapien.controller"
 
 
-const http = axios.create({ 
-    baseURL: process.env.SW_SAPIEN_API_URL,
-    headers: {
-        "Content-Type": "application/json",
-    }
+const http = axios.create({
+  baseURL: process.env.SW_SAPIEN_API_URL,
+  headers: {
+    "Content-Type": "application/jsontoxml",
+  },
 });
 
 namespace StampBillController {
+  export const stampBill = async (ctx: any) => {
+    const { data } = ctx.request.body;
+    const accessToken = await SWSapienController.auth();
 
-    export const stampBill = async (ctx: any) => {
+    console.log("accessToken", accessToken);
 
-        const { data } = ctx.request.body;
-        const accessToken = await SWSapienController.auth();
+    // requet to SW Sapien
+    const res = await http
+      .post(
+        process.env.SW_SAPIEN_API_URL + "/v3/cfdi33/issue/json/v4",
+        { data },
+        {
+          headers: {
+            Authorization: `bearer ${accessToken
+              .replace(/\n/g, "")
+              .replace(/\s/g, "")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .catch((error) => {
+        ctx.throw(400, error.response.data.message);
+      });
 
-        console.log("accessToken", accessToken);
-        const res = await http.post(
-            process.env.SW_SAPIEN_API_URL + "/cfdi33/issue/json/v4/b64",
-            { data },
-            {
-                headers: {  
-                    // REPLACE ENTERS AND SPACES
-                    Authorization: `bearer ${accessToken.replace(/\n/g, "").replace(/\s/g, "")}`,
-                    "Content-Type": "application/json",
-                }
-            },
-        ).catch((error) => {
-            ctx.throw(400, error.response.data.message);
-        });
-
-        ctx.status = 200;
-        ctx.body = accessToken;
-    }
-
+    ctx.status = 200;
+    ctx.body = accessToken;
+  };
 }
 
-export { StampBillController }
+export { StampBillController };

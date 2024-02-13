@@ -163,6 +163,16 @@ export const Stamp = () => {
     }
   }, [sales]);
 
+  const handleStampBill = () => {
+    // eslint-disable-next-line no-console
+    const salesSelector = sales;
+    const clientSelector = client;
+    alert("Timbrando factura");
+    
+
+  }
+  
+
   return (
     <div className="flex items-center justify-center w-full  py-32">
       <div
@@ -200,6 +210,7 @@ export const Stamp = () => {
                 formikEditSupplier.dirty &&
                 sales.length > 0)
             }
+            handleStampBill={handleStampBill}
           />
         </section>
       </div>

@@ -28,7 +28,8 @@
     "typescript": "^5.3.3",
     "uuidv4": "^6.2.13",
     "validate-rfc": "^2.0.3",
-    "vercel": "^33.5.0"
+    "vercel": "^33.5.0",
+    "virtualxml-cfdi": "^1.3.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

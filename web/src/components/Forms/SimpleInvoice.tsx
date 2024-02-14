@@ -72,12 +72,12 @@ export default function SimpleInvoice() {
     },
   });
 
-  // useLayoutEffect(() => {
-  //   console.log(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
-  //   if (sales.length > 0) {
-  //     router.push("/stamp-bill");
-  //   }
-  // }, [sales]);
+  useLayoutEffect(() => {
+   
+    if (sales.length > 0) {
+      router.push("/stamp-bill");
+    }
+  }, [sales]);
 
   return (
     <form

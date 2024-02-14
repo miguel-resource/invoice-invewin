@@ -19,6 +19,7 @@ import { ButtonStampInvoice } from "./ButtonStampInvoice";
 import { UUIDInitial, UUIDSchema } from "@/schemas/UUID";
 import { getSale } from "@/services/Invewin";
 import { setSale } from "@/redux/saleSlice";
+import { PaymentMethodSchema } from "@/schemas/PaymentMethod";
 
 export const Stamp = () => {
   const sales = useSelector((state: any) => state.sales);
@@ -101,6 +102,16 @@ export const Stamp = () => {
     },
   });
 
+  const formikPaymentMethod = useFormik({
+    validationSchema: PaymentMethodSchema,
+    initialValues: {
+      paymentMethod: "",
+    },
+    onSubmit: (values) => {
+      // eslint-disable-next-line no-console
+    },
+  });
+
   const formikEditSupplier = useFormik({
     validationSchema: VerifySupplierSchema,
     initialValues: VerifySupplierInitial,
@@ -158,7 +169,7 @@ export const Stamp = () => {
   });
 
   useLayoutEffect(() => {
-    if (sales.length > 0 && !client) {
+    if (sales.length === 0 && client.razonSocial === "") {
       router.push("/load-ticket");
     }
   }, [sales]);
@@ -168,10 +179,7 @@ export const Stamp = () => {
     const salesSelector = sales;
     const clientSelector = client;
     alert("Timbrando factura");
-    
-
-  }
-  
+  };
 
   return (
     <div className="flex items-center justify-center w-full  py-32">
@@ -190,7 +198,7 @@ export const Stamp = () => {
 
         {showForms && (
           <>
-            <PaymentMethod />
+            <PaymentMethod formik={formikPaymentMethod} />
             <EditClient
               formik={formikEditSupplier}
               onClose={function (): void {
@@ -205,10 +213,11 @@ export const Stamp = () => {
           <TotalInvoice />
           <ButtonStampInvoice
             isValidToStamp={
-              isValidToStamp ||
+              isValidToStamp &&
               (formikEditSupplier.isValid &&
                 formikEditSupplier.dirty &&
-                sales.length > 0)
+                sales.length > 0) &&
+              formikPaymentMethod.values.paymentMethod !== ""
             }
             handleStampBill={handleStampBill}
           />

@@ -1,7 +1,11 @@
 import { getCatalogs } from "@/services/Catalog";
 import { useEffect, useState } from "react";
 
-export const PaymentMethod = () => {
+type Props = {
+  formik: any;
+};
+
+export const PaymentMethod = ({ formik }: Props) => {
   const [catalogPayMethod, setCatalogPayMethod] = useState([]);
 
   const handleGetCatalogs = async () => {
@@ -12,7 +16,6 @@ export const PaymentMethod = () => {
   useEffect(() => {
     handleGetCatalogs();
   }, []);
-  
 
   return (
     <form
@@ -22,16 +25,21 @@ export const PaymentMethod = () => {
       <label className="form-label">Método de pago</label>
 
       <div className="w-full flex flex-row gap-2">
-        <select name="paymentMethod" id="paymentMethod" className="form-control form-select mb-5px w-full">
-            <option value="">Selecciona una opción</option>
+        <select
+          name="paymentMethod"
+          id="paymentMethod"
+          className="form-control form-select mb-5px w-full"
+          onChange={formik.handleChange}
+          value={formik.values.paymentMethod}
+          
+        >
+          <option value="">Selecciona una opción</option>
           {catalogPayMethod.map((method: any) => (
             <option key={method.id} value={method.id}>
               {method.descripcion}
             </option>
           ))}
-          
         </select>
-
       </div>
     </form>
   );

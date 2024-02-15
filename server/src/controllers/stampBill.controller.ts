@@ -2,7 +2,7 @@ import axios from "axios";
 import SWSapienController from "./swSapien.controller";
 import { ClientOnlineController } from "./clientOnline.controller";
 import { v4 as uuid } from "uuid";
-
+import { MailerController } from "./mailer.controller";
 
 const http = axios.create({
   baseURL: process.env.SW_SAPIEN_API_URL,
@@ -17,10 +17,15 @@ namespace StampBillController {
     const accessToken = await SWSapienController.auth();
     const empresaID = salesSelector[0].emisor.empresaId;
 
+    console.log("CLIENT SELECTOR");
+    console.log(clientSelector);
+
     // VERIFY CLIENT AND CHECK IF NEEDS TO BE UPDATED OR CREATED
     if (clientSelector.id !== "") {
-
-      const client = await ClientOnlineController.getClientByID(clientSelector.id, empresaID);
+      const client = await ClientOnlineController.getClientByID(
+        clientSelector.id,
+        empresaID
+      );
 
       if (
         client.razonSocial !== clientSelector.razonSocial ||
@@ -29,27 +34,22 @@ namespace StampBillController {
         client.codigoPostal !== clientSelector.codigoPostal ||
         client.email !== clientSelector.email
       ) {
-
-        await ClientOnlineController.queryUpdateClient(clientSelector.id, empresaID, clientSelector);
-        
-        ctx.status = 200;
-        return;
-      } 
-
-
-      console.log("NO UPDATE CLIENT");
-
+        await ClientOnlineController.queryUpdateClient(
+          clientSelector.id,
+          empresaID,
+          clientSelector
+        );
+      }
     } else {
       // create client
-      console.log("CREATE CLIENT");
       clientSelector.empresaId = empresaID;
       clientSelector.id = uuid();
       console.log(clientSelector);
 
       await ClientOnlineController.queryCreateClient(empresaID, clientSelector);
-    }1
+    }
 
-
+    // CREATE BILL
 
     // requet to SW Sapien
     // const res = await http
@@ -68,6 +68,9 @@ namespace StampBillController {
     //   .catch((error) => {
     //     ctx.throw(400, error.response.data.message);
     //   });
+
+    // SEND MAIL
+    MailerController.sendStampBillMail(clientSelector.email);
 
     ctx.status = 200;
     ctx.body = accessToken;

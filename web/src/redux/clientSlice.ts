@@ -7,6 +7,7 @@ const initialState = {
   regimenFiscal: "",
   codigoPostal: "",
   usoCfdi: "",
+  email: "",
 };
 
 const clientSlice = createSlice({
@@ -20,6 +21,7 @@ const clientSlice = createSlice({
       state.regimenFiscal = action.payload.regimenFiscal;
       state.codigoPostal = action.payload.codigoPostal;
       state.usoCfdi = action.payload.usoCfdi;
+      state.email = action.payload.email;
     },
     resetClient: (state) => {
       state.id = "";
@@ -28,6 +30,7 @@ const clientSlice = createSlice({
       state.regimenFiscal = "";
       state.codigoPostal = "";
       state.usoCfdi = "";
+      state.email = "";
     },
   },
 });

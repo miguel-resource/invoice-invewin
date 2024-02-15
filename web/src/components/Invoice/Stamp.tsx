@@ -20,6 +20,7 @@ import { UUIDInitial, UUIDSchema } from "@/schemas/UUID";
 import { getSale } from "@/services/Invewin";
 import { setSale } from "@/redux/saleSlice";
 import { PaymentMethodSchema } from "@/schemas/PaymentMethod";
+import { stampBill } from "@/services/StampBill";
 
 export const Stamp = () => {
   const sales = useSelector((state: any) => state.sales);
@@ -177,8 +178,44 @@ export const Stamp = () => {
   const handleStampBill = () => {
     // eslint-disable-next-line no-console
     const salesSelector = sales;
-    const clientSelector = client;
-    alert("Timbrando factura");
+    const clientSelector = {
+      razonSocial: formikEditSupplier.values.razonSocial,
+      usoCfdi: formikEditSupplier.values.usoCfdi,
+      regimenFiscal: formikEditSupplier.values.regimenFiscal,
+      codigoPostal: formikEditSupplier.values.codigoPostal,
+      email: formikEditSupplier.values.email,
+      id: client.id ? client.id : "",
+      rfc: formikSearchRFC.values.rfc,
+    }
+    const paymentMethod = formikPaymentMethod.values.paymentMethod;
+    
+    const data = {
+      salesSelector,
+      clientSelector,
+      paymentMethod,
+    };
+
+    
+    stampBill(data).then((res) => {
+      console.log(res);
+
+      setMessage("Factura timbrada correctamente");
+      setType("success");
+      setOpen(true);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+    ).catch((err) => {
+      console.log(err);
+
+      setMessage("Error al timbrar la factura");
+      setType("error");
+      setOpen(true);
+
+    
+    });
   };
 
   return (
@@ -213,7 +250,7 @@ export const Stamp = () => {
           <TotalInvoice />
           <ButtonStampInvoice
             isValidToStamp={
-              isValidToStamp &&
+              isValidToStamp ||
               (formikEditSupplier.isValid &&
                 formikEditSupplier.dirty &&
                 sales.length > 0) &&

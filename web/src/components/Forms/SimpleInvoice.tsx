@@ -73,7 +73,6 @@ export default function SimpleInvoice() {
   });
 
   useLayoutEffect(() => {
-   
     if (sales.length > 0) {
       router.push("/stamp-bill");
     }
@@ -82,7 +81,17 @@ export default function SimpleInvoice() {
   return (
     <form
       className="flex items-center justify-center h-full"
-      onSubmit={formik.handleSubmit}
+      // onSubmit={formik.handleSubmit}
+      onSubmit={(e) => {
+        e.preventDefault();
+        formik.handleSubmit();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      }
+      }
     >
       <div className="row  w-2/6 bg-white shadow-lg mx-auto p-8 rounded-xl">
         <div className="mb-10px mt-2">

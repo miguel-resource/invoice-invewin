@@ -49,7 +49,9 @@ export default function EditClient({
 
   return (
     <>
-      {areFieldsEmpty ? (
+      {areFieldsEmpty &&
+      !isCreatingClient  
+      ? (
         <div className="flex justify-center items-center h-96">
           <CircularProgress />
         </div>

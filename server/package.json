@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "netlify-lambda serve src",
+    "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
     "typeorm": "typeorm-ts-node-commonjs",
     "build": "tsc"

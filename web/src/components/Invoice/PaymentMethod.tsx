@@ -35,7 +35,7 @@ export const PaymentMethod = ({ formik }: Props) => {
         >
           <option value="">Selecciona una opción</option>
           {catalogPayMethod.map((method: any) => (
-            <option key={method.id} value={method.id}>
+            <option key={method.clave} value={method.clave}>
               {method.descripcion}
             </option>
           ))}

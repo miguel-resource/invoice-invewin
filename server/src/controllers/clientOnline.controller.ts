@@ -8,6 +8,77 @@ const http = axios.create({
 });
 
 namespace ClientOnlineController {
+  export async function getClientByID(id: string, empresaID: string) {
+    const accessToken = await InvewinController.auth();
+
+    const data = await http.get(
+      process.env.INVEWIN_API_URL +
+        "/empresas/" +
+        empresaID +
+        "/clientesonline/" +
+        id,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return data.data;
+  }
+
+  export async function queryUpdateClient(
+    id: string,
+    empresaID: string,
+    data: any
+  ) {
+    const accessToken = await InvewinController.auth();
+
+    await http
+      .put(
+        process.env.INVEWIN_API_URL +
+          "/empresas/" +
+          empresaID +
+          "/clientesonline/" +
+          id,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response: any) => {
+        console.log("response", response.data);
+      })
+      .catch((error) => {
+        console.log("error", error.response.data);
+      });
+  }
+
+  export async function queryCreateClient(empresaID: string, data: any) {
+    const accessToken = await InvewinController.auth();
+
+    await http
+      .post(
+        process.env.INVEWIN_API_URL + "/empresas/" + empresaID + "/clientesonline",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response: any) => {
+        console.log("response", response.data);
+      })
+      .catch((error) => {
+        console.log("error", error.response.data);
+      });
+  }
+
+  
+
   export async function getClientByRFC(ctx: any) {
     const accessToken = await InvewinController.auth();
 
@@ -57,7 +128,6 @@ namespace ClientOnlineController {
         }
       )
       .catch((error) => {
-        console.log("error", error.response.data);
         ctx.status = 400;
         ctx.body = error.response.data;
 

@@ -102,7 +102,6 @@ namespace CerfificatesController {
       JSON.stringify(passwordCertificate),
       process.env.CERTIFICATES_SECRET || ""
     ).toString();
-    console.log("PASSWORD ENCRYPTED", passwordCertificateEncrypted);
 
     await http
       .post(
@@ -169,8 +168,7 @@ namespace CerfificatesController {
 
     const certificateBase64 = certificate ? certificate[0].buffer.toString("base64") : getCertificate.certificado;
     const privateKeyBase64 = privateKey ? privateKey[0].buffer.toString("base64") : getCertificate.llavePrivada;
-    console.log("CERTIFICATE", certificateBase64);
-    console.log("PRIVATE KEY", privateKeyBase64);
+
 
     const passwordCertificateEncrypted = CryptoJS.AES.encrypt(
       JSON.stringify(passwordCertificate),

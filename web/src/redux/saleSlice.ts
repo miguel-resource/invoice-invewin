@@ -143,27 +143,16 @@ export const saleSlice = createSlice({
   reducers: {
     setSale: (state: any, action) => {
       const sale = action.payload;
-      console.log(sale);
+
       state.push(sale);
-      console.log(state);
     },
     removeSpecificSale: (state: any, action) => {
       const sale = action.payload;
-      console.log(sale.id);
       state.filter((foundedSale: any) => foundedSale.id === sale.id);
 
-      console.log(state);
-
       const index = state.findIndex((sale: any) => sale.id === sale.id);
-
       state.splice(index, 1);
-      
-
-      
-
-    }
-
-
+    },
   },
 });
 

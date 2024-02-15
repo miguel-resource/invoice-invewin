@@ -1,18 +1,20 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-    service: 'outlook',
-    auth: {
-        user: 'servicio-facturacion-invewin@outlook.com',
-        pass: 'J#1Pb@!ff!PrHVwn'
-    }
-});
+
 
 namespace MailerController {
     export function sendStampBillMail(to: string) {
+
+        const transporter = nodemailer.createTransport({
+            service: 'outlook',
+            auth: {
+                user: process.env.NODE_MAILER_EMAIL ? process.env.NODE_MAILER_EMAIL : '',
+                pass: process.env.NODE_MAILER_PASSWORD ? process.env.NODE_MAILER_PASSWORD : ''
+            }
+        });
         
         const mailOptions = {
-            from: 'servicio-facturacion-invewin@outlook.com', 
+            from: process.env.NODE_MAILER_EMAIL, 
             to,
             subject: 'Servicio de facturación Invewin',
             text: 'Esto  es una prueba de envio de correo, para el servicio de facturación de Invewin'

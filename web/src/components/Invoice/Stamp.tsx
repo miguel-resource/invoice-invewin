@@ -149,7 +149,9 @@ export const Stamp = () => {
               return;
             }
 
-            if (res.data.emisor.empresaId !== sales[0].emisor.empresaId) {
+            if (
+              sales.length > 0 && 
+              res.data.emisor.empresaId !== sales[0].emisor.empresaId) {
               setMessage("El ticket no pertenece a la empresa");
               setType("error");
               setOpen(true);
@@ -169,11 +171,11 @@ export const Stamp = () => {
     },
   });
 
-  useLayoutEffect(() => {
-    if (sales.length === 0 && client.razonSocial === "") {
-      router.push("/load-ticket");
-    }
-  }, [sales]);
+  // useLayoutEffect(() => {
+  //   if (sales.length === 0 && client.razonSocial === "") {
+  //     // router.push("/load-ticket");
+  //   }
+  // }, [sales]);
 
   const handleStampBill = () => {
     // eslint-disable-next-line no-console

@@ -164,7 +164,7 @@ export const Stamp = () => {
           }
         })
         .catch((err) => {
-          setMessage("El ticket no existe, intente de nuevo");
+          setMessage(err.response.data.mensaje || "Error al cargar el ticket");
           setType("error");
           setOpen(true);
         });

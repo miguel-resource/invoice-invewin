@@ -150,8 +150,9 @@ export const Stamp = () => {
             }
 
             if (
-              sales.length > 0 && 
-              res.data.emisor.empresaId !== sales[0].emisor.empresaId) {
+              sales.length > 0 &&
+              res.data.emisor.empresaId !== sales[0].emisor.empresaId
+            ) {
               setMessage("El ticket no pertenece a la empresa");
               setType("error");
               setOpen(true);
@@ -188,36 +189,34 @@ export const Stamp = () => {
       email: formikEditSupplier.values.email,
       id: client.id ? client.id : "",
       rfc: formikSearchRFC.values.rfc,
-    }
+    };
     const paymentMethod = formikPaymentMethod.values.paymentMethod;
-    
+
     const data = {
       salesSelector,
       clientSelector,
       paymentMethod,
     };
 
-    
-    stampBill(data).then((res) => {
-      console.log(res);
+    stampBill(data)
+      .then((res) => {
+        console.log(res);
 
-      setMessage("Factura timbrada correctamente");
-      setType("success");
-      setOpen(true);
+        setMessage("Factura timbrada correctamente");
+        setType("success");
+        setOpen(true);
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    }
-    ).catch((err) => {
-      console.log(err);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((err) => {
+        console.log(err);
 
-      setMessage("Error al timbrar la factura");
-      setType("error");
-      setOpen(true);
-
-    
-    });
+        setMessage("Error al timbrar la factura");
+        setType("error");
+        setOpen(true);
+      });
   };
 
   return (
@@ -252,11 +251,11 @@ export const Stamp = () => {
           <TotalInvoice />
           <ButtonStampInvoice
             isValidToStamp={
-              isValidToStamp ||
+              (isValidToStamp &&
+                formikPaymentMethod.values.paymentMethod !== "") &&
               (formikEditSupplier.isValid &&
                 formikEditSupplier.dirty &&
-                sales.length > 0) &&
-              formikPaymentMethod.values.paymentMethod !== ""
+                sales.length > 0)
             }
             handleStampBill={handleStampBill}
           />

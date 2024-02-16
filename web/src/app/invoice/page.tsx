@@ -17,13 +17,10 @@ export default function InvoicePage() {
   const [open, setOpen] = useState(false);
 
   const handleInvoice = () => {
-    
     setMessage("Factura timbrada correctamente");
     setType("success");
     setOpen(true);
   };
-
-  
 
   return (
     <MainWrapper>
@@ -31,17 +28,9 @@ export default function InvoicePage() {
         <section className="m-auto w-11/12">
           <div className="panel-body flex flex-row justify-center gap-10 items-center pb-0 w-full">
             <AmountDetails />
-            
           </div>
 
-          <div
-            className="
-            flex
-            justify-center
-            
-            pb-5
-        "
-          >
+          <div className=" flex justify-center pb-5">
             <button
               onClick={handleInvoice}
               type="button"

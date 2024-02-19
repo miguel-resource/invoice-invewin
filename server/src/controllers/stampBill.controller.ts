@@ -4,6 +4,8 @@ import { ClientOnlineController } from "./clientOnline.controller";
 import { v4 as uuid } from "uuid";
 import { MailerController } from "./mailer.controller";
 
+import { X509Certificate } from "crypto";
+
 const http = axios.create({
   baseURL: process.env.SW_SAPIEN_API_URL,
   headers: {
@@ -19,6 +21,9 @@ namespace StampBillController {
 
     console.log("CLIENT SELECTOR");
     console.log(clientSelector);
+
+    console.log("SALES SELECTOR");
+    console.log(salesSelector);
 
     // VERIFY CLIENT AND CHECK IF NEEDS TO BE UPDATED OR CREATED
     if (clientSelector.id !== "") {
@@ -49,27 +54,45 @@ namespace StampBillController {
       await ClientOnlineController.queryCreateClient(empresaID, clientSelector);
     }
 
+    // GET SERIAL NUMBER OF CERTIFICATE
+    const certificate = await SWSapienController.getCertificateSerial(
+      salesSelector[0].emisor.rfc
+    );
+
+    const data = {
+      Version: "4.0",
+      Moneda: "MXN",
+      Fecha: new Date().toISOString(),
+      TipoDeComprobante: "E",
+      Exportacion: "01",
+      MetodoPago: "PUE",
+      Descuento: "0.00",
+      FormaPago: paymentMethod,
+      NoCertificado: certificate.certificate_number,
+      Certificado: certificate.csd_certificate,
+      Emisor: {
+        Rfc: salesSelector[0].emisor.rfc,
+        Nombre: salesSelector[0].emisor.nombre,
+        RegimenFiscal: salesSelector[0].emisor.regimenFiscal,
+      },
+      Receptor: {
+        Rfc: clientSelector.rfc,
+        Nombre: clientSelector.razonSocial,
+        UsoCFDI: clientSelector.usoCfdi,
+      },
+      // Conceptos: salesSelector[0].conceptos,
+      // Impuestos: {
+      //   TotalImpuestosTrasladados: salesSelector[0].impuestos.totalImpuestosTrasladados,
+      //   Traslados: salesSelector[0].impuestos.traslados,
+      // },
+    };
+
     // CREATE BILL
+    // const response = SWSapienController.createBill(
+    //   data
+    // );
 
-    // requet to SW Sapien
-    // const res = await http
-    //   .post(
-    //     process.env.SW_SAPIEN_API_URL + "/v3/cfdi33/issue/json/v4",
-    //     { data },
-    //     {
-    //       headers: {
-    //         Authorization: `bearer ${accessToken
-    //           .replace(/\n/g, "")
-    //           .replace(/\s/g, "")}`,
-    //         "Content-Type": "application/json",
-    //       },
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     ctx.throw(400, error.response.data.message);
-    //   });
-
-    // SEND MAIL
+    // // SEND MAIL
     MailerController.sendStampBillMail(clientSelector.email);
 
     ctx.status = 200;

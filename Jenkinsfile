@@ -28,6 +28,7 @@ pipeline {
             }
         }
         stage('Frontend deploy push image'){
+            agent any
             when {
                 branch "main"
             }
@@ -84,6 +85,7 @@ pipeline {
             }
         }
         stage('Backend deploy push image'){
+            agent any
             when {
                 branch "main"
             }

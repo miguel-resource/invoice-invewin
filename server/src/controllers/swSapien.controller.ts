@@ -22,7 +22,6 @@ export type DataBill = {
   SubTotal: string;
   Descuento: string;
   Moneda: string;
-  TipoCambio: string;
   Total: string;
   TipoDeComprobante: string;
   Exportacion: string;
@@ -42,7 +41,6 @@ export type DataBill = {
   Conceptos: [
     {
       ClaveProdServ: string;
-      NoIdentificacion: string;
       Cantidad: string;
       ClaveUnidad: string;
       Unidad: string;

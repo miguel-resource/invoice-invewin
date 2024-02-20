@@ -139,7 +139,7 @@ export const Stamp = () => {
             setOpen(true);
 
             const searchSale = sales.find(
-              (sale: any) => sale.id === formikUUID.values.uuid
+              (sale: any) => sale.id.toLowerCase() === res.data.id.toLowerCase()
             );
 
             if (searchSale) {

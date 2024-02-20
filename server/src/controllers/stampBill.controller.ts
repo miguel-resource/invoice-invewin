@@ -72,13 +72,15 @@ namespace StampBillController {
       Certificado: certificate.csd_certificate,
       Emisor: {
         Rfc: salesSelector[0].emisor.rfc,
-        Nombre: salesSelector[0].emisor.nombre,
+        Nombre: salesSelector[0].emisor.razonSocial,
         RegimenFiscal: salesSelector[0].emisor.regimenFiscal,
       },
       Receptor: {
         Rfc: clientSelector.rfc,
         Nombre: clientSelector.razonSocial,
-        UsoCFDI: clientSelector.usoCfdi,
+        DomicilioFiscalReceptor: clientSelector.codigoPostal,
+        RegimenFiscalReceptor: clientSelector.regimenFiscal,
+        UsoCFDI: clientSelector.usoCfdi
       },
       // Conceptos: salesSelector[0].conceptos,
       // Impuestos: {
@@ -86,6 +88,9 @@ namespace StampBillController {
       //   Traslados: salesSelector[0].impuestos.traslados,
       // },
     };
+
+    console.log("DATA");
+    console.log(data);
 
     // CREATE BILL
     // const response = SWSapienController.createBill(

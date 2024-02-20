@@ -39,7 +39,7 @@ pipeline {
                 stage('Front: build docker and push') {
                     steps {
                         dir("web") {
-                            sh "docker build -t invewinapp:latest ."
+                            sh "docker build -t invewinapp:latest --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL --build-arg NEXT_PUBLIC_INVEWIN_API_URL=$NEXT_PUBLIC_INVEWIN_API_URL --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=$NEXT_PUBLIC_RECAPTCHA_SITE_KEY ."
                             sh "aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 917991404885.dkr.ecr.us-west-2.amazonaws.com"
                             sh "docker tag invewinapp:latest 917991404885.dkr.ecr.us-west-2.amazonaws.com/invewinapp-repo:latest"
                             sh "docker push 917991404885.dkr.ecr.us-west-2.amazonaws.com/invewinapp-repo:latest"

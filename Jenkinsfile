@@ -7,6 +7,9 @@ pipeline {
         DEST_SRV_HOST = credentials('facturasinvewin-dest-host')
         DEST_SRV_APP_FRONT_DIR = credentials('facturasinvewin-app-front-dir')
         DEST_SRV_APP_BACK_DIR = credentials('facturasinvewin-app-back-dir')
+        NEXT_PUBLIC_API_URL='https://facturasapi.karimnot.com'
+	    NEXT_PUBLIC_INVEWIN_API_URL='https://invewincloud.com/api'
+	    NEXT_PUBLIC_RECAPTCHA_SITE_KEY= credentials('facturasinvewin-app-front-recaptcha')
     }
     stages {
         stage('Frontend build'){

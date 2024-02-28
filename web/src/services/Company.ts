@@ -32,3 +32,10 @@ export async function getCompanyData(userName: string) {
     userName
   });
 }
+
+export async function getCompanyDataEmisor(userName: string, password: string) {
+  return http.post(path + "/emisor", {
+    userName,
+    password
+  });
+}

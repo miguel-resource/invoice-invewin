@@ -1,16 +1,41 @@
-import { cp } from "fs";
+import { getCompanyDataEmisor } from "@/services/Company";
+import { Chip, CircularProgress } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function Header() {
   const path = usePathname();
   const company = useSelector((state: any) => state.company);
+  const loginCompany = useSelector((state: any) => state.loginCompany);
+
+  const [status, setStatus] = useState("");
+  const [expiration, setExpiration] = useState("");
+
+  const handleGetCompanyStatus = async () => {
+    const res = await getCompanyDataEmisor(loginCompany.email, loginCompany.password);
+
+    // return res.data
+
+    setStatus(res.data.estatus);
+    setExpiration(res.data.vencimiento);
+  }
+
+  useEffect(() => {
+    if (loginCompany.email !== "" && loginCompany.password !== "") {
+      handleGetCompanyStatus();
+
+    }
+  }
+  , []);
 
   return (
-    <div id="header"
+    <div
+      id="header"
       style={{ position: "absolute", width: "100%" }}
-      className="app-header border-b-2  border-slate-500">
+      className="app-header border-b-2  border-slate-500"
+    >
       <div className="navbar-header ">
         <a
           href="/"
@@ -27,9 +52,10 @@ export default function Header() {
               className={`relative ease-out text-slate-800 no-underline
                 after:-bottom-3 after:absolute after:left-0 after:right-0 after:h-1 after:bg-slate-700 after:transition-all after:duration-300 after:ease-out  after:shadow-slate-500 after:opacity-0 after:z-10 after:scale-x-0 after:transform-gpu after:origin-left  hover:after:scale-x-100 
                 hover:after:opacity-100 hover:after:z-20 
-                ${path === "/load-ticket"
-                  ? "after:scale-x-100 after:opacity-100 after:z-20"
-                  : ""
+                ${
+                  path === "/load-ticket"
+                    ? "after:scale-x-100 after:opacity-100 after:z-20"
+                    : ""
                 }`}
             >
               <span className="d-none d-md-inline">Facturar</span>
@@ -42,9 +68,10 @@ export default function Header() {
               className={`relative ease-out text-slate-700 no-underline
                 after:-bottom-3 after:absolute after:left-0 after:right-0 after:h-1 after:bg-slate-700 after:transition-all after:duration-300 after:ease-out  after:shadow-slate-500 after:opacity-0 after:z-10 after:scale-x-0 after:transform-gpu after:origin-left  hover:after:scale-x-100 
                 hover:after:opacity-100 hover:after:z-20
-                ${path === "/login-supplier"
-                  ? "after:scale-x-100 after:opacity-100 after:z-20"
-                  : ""
+                ${
+                  path === "/login-supplier"
+                    ? "after:scale-x-100 after:opacity-100 after:z-20"
+                    : ""
                 }`}
             >
               <span className="d-none d-md-inline">Empresa</span>
@@ -94,6 +121,40 @@ export default function Header() {
               </div>
             </div>
           </div>
+
+
+                {company && company.user !== "" && (
+          <div
+            className="navbar-item dropdown dropdown-user grid grid-cols-2 gap-2"
+            style={{ position: "absolute", right: "10px" }}
+          >
+
+            {status ? (
+            <Chip
+              variant="outlined"
+              label={`Estatus: ${
+                status
+              }`}
+              color={status === "Activo" ? "success" : "error"}
+            />
+            ) : (
+              <CircularProgress
+                size={20}
+                color="info"
+              />
+            )}
+
+              {expiration && (
+            <Chip
+              variant="outlined"
+              label={`Fecha de vencimiento: ${
+                expiration
+              }`}
+              color="default"
+            />
+            )}
+          </div>
+                )}
         </div>
 
         <button

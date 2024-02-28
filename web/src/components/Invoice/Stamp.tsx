@@ -139,7 +139,7 @@ export const Stamp = () => {
             setOpen(true);
 
             const searchSale = sales.find(
-              (sale: any) => sale.id === formikUUID.values.uuid
+              (sale: any) => sale.id.toLowerCase() === res.data.id.toLowerCase()
             );
 
             if (searchSale) {
@@ -208,12 +208,12 @@ export const Stamp = () => {
 
         setTimeout(() => {
           window.location.reload();
+          router.push("/load-ticket");
         }, 2000);
       })
       .catch((err) => {
-        console.log(err);
 
-        setMessage("Error al timbrar la factura");
+        setMessage(err.response.data || "Error al timbrar la factura");
         setType("error");
         setOpen(true);
       });

@@ -22,13 +22,13 @@ namespace CompanyController {
       }
     );
 
-    const company = await getCompany(user.empresaId);
+    const company = await queryGetCompany(user.empresaId);
 
     ctx.status = 200;
     ctx.body = company.data;
   }
 
-  export async function getCompany(companyID: string) {
+  export async function queryGetCompany(companyID: string) {
     const accesToken = await InvewinController.auth();
 
     const data = await http.get(
@@ -43,17 +43,42 @@ namespace CompanyController {
     return data;
   }
 
-  export async function getCompanyEmisor(ctx: any) {
+  export async function getCompany(ctx: any) {
     const { userName } = ctx.request.body;
 
     const userNameRoute = userName.replace("@", "%40");
 
     const user: User = await UserController.getUser(userNameRoute);
 
-    const company = await getCompany(user.empresaId);
+    const company = await queryGetCompany(user.empresaId);
 
     ctx.status = 200;
     ctx.body = company.data;
+  }
+
+  export async function getCompanyEmisor(ctx: any) {
+    const { userName, password } = ctx.request.body;
+
+    const userNameRoute = userName.replace("@", "%40");
+    const user: User = await UserController.getUser(userNameRoute);
+
+    const accessToken = await InvewinController.authCustom(
+      password,
+      userName,
+      user.empresaId
+    );
+
+    const data = await http.get(
+      process.env.INVEWIN_API_URL + "/empresas/emisor/" + user.empresaId,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    ctx.status = 200;
+    ctx.body = data.data;
   }
 
   export async function updateCompany(ctx: any) {

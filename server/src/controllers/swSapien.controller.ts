@@ -8,8 +8,6 @@ const http = axios.create({
   },
 });
 
-
-
 export type DataBill = {
   Version: string;
   FormaPago: string;
@@ -18,11 +16,10 @@ export type DataBill = {
   Fecha: string;
   MetodoPago: string;
   NoCertificado: string;
-  Certificado: string;
+  // Certificado: string;
   SubTotal: string;
   Descuento: string;
   Moneda: string;
-  TipoCambio: string;
   Total: string;
   TipoDeComprobante: string;
   Exportacion: string;
@@ -39,10 +36,9 @@ export type DataBill = {
     RegimenFiscalReceptor: string;
     UsoCFDI: string;
   };
-  Conceptos: [
+  Conceptos?: [
     {
       ClaveProdServ: string;
-      NoIdentificacion: string;
       Cantidad: string;
       ClaveUnidad: string;
       Unidad: string;
@@ -73,9 +69,9 @@ export type DataBill = {
       };
     }
   ];
-  Impuestos: {
+  Impuestos?: {
     TotalImpuestosTrasladados: string;
-    TotalImpuestosRetenidos: string;
+    TotalImpuestosRetenidos?: string;
     Retenciones: [
       {
         Importe: string;
@@ -119,20 +115,42 @@ namespace SWSapienController {
     const accessToken = await SWSapienController.auth();
 
     const response = await http
-      .post(
-        process.env.SW_SAPIEN_API_URL + "/v3/cfdi33/issue/json/v4",
-        { data },
-        {
-          headers: {
-            Authorization: `bearer ${accessToken
-              .replace(/\n/g, "")
-              .replace(/\s/g, "")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      .post(process.env.SW_SAPIEN_API_URL + "/v3/cfdi33/issue/json/v4", data, {
+        headers: {
+          Authorization: `bearer ${accessToken
+            .replace(/\n/g, "")
+            .replace(/\s/g, "")}`,
+          "Content-Type": "application/jsontoxml",
+        },
+      })
       .catch((error) => {
-        console.log("ERROR createBill", error);
+        console.log("ERROR createBill", error.response.data);
+
+        return error;
+      })
+      .then((response: any) => {
+        return response;
+      });
+
+    return response;
+  };
+
+  export const getCertificateSerial = async (rfc: string) => {
+    const accessToken = await SWSapienController.auth();
+
+    const response = await http
+      .get(process.env.SW_SAPIEN_API_URL + `/certificates/rfc/EKU9003173C9`, {
+        headers: {
+          Authorization: `bearer ${accessToken
+            .replace(/\n/g, "")
+            .replace(/\s/g, "")}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .catch((error) => {
+        console.log("ERROR getCertificateSerial", error);
+
+        return error;
       })
       .then((response: any) => {
         return response.data;
@@ -140,34 +158,6 @@ namespace SWSapienController {
 
     return response;
   };
-
-
-  export const getCertificateSerial = async (rfc: string) => {
-    const accessToken = await SWSapienController.auth();
-
-    const response = await http
-      .get(
-        process.env.SW_SAPIEN_API_URL + `/certificates/rfc/EKU9003173C9`,
-        {
-          headers: {
-            Authorization: `bearer ${accessToken
-              .replace(/\n/g, "")
-              .replace(/\s/g, "")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .catch((error) => {
-        console.log("ERROR getCertificateSerial", error);
-      })
-      .then((response: any) => {
-        return response.data;
-      });
-
-    
-
-    return response.data[0];
-  }
 }
 
 export default SWSapienController;

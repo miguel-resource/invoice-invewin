@@ -95,7 +95,7 @@ pipeline {
             stages {
                 stage('Back: build docker and push') {
                     steps {
-                        dir("web") {
+                        dir("server") {
                             sh "docker build -t invewinapi:latest ."
                             sh "aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 917991404885.dkr.ecr.us-west-2.amazonaws.com"
                             sh "docker tag invewinapi:latest 917991404885.dkr.ecr.us-west-2.amazonaws.com/invewinapi-repo:latest"

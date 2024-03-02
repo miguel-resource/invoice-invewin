@@ -127,6 +127,12 @@ pipeline {
                 }
             }
         }
+        stage('Delete Workspace'){
+            agent any
+            steps {
+                cleanWs()
+            }
+        }
     }
 }
 

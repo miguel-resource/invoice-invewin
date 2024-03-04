@@ -27,5 +27,5 @@ export const VerifySupplierSchema = Yup.object().shape({
     .min(7, "Muy corto!")
     .max(51, "Muy largo!"),
     usoCfdi: Yup.string()
-    // .required("Requerido"),
+    .required("Requerido"),
 });

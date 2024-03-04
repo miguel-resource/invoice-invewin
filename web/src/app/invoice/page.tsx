@@ -30,7 +30,7 @@ export default function InvoicePage() {
             <AmountDetails />
           </div>
 
-          <div className=" flex justify-center pb-5">
+          <div className="flex justify-center pb-5">
             <button
               onClick={handleInvoice}
               type="button"

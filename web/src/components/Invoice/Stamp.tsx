@@ -251,7 +251,7 @@ export const Stamp = () => {
           <TotalInvoice />
           <ButtonStampInvoice
             isValidToStamp={
-              (isValidToStamp &&
+              ( 
                 formikPaymentMethod.values.paymentMethod !== "") &&
               (formikEditSupplier.isValid &&
                 formikEditSupplier.dirty &&

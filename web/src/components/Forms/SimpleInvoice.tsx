@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import CommonAlert from "@/components/common/Alert";
 import { useFormik } from "formik";
 import { UUIDInitial, UUIDSchema } from "@/schemas/UUID";
@@ -27,13 +27,26 @@ export default function SimpleInvoice() {
     getSale(uuid)
       .then((res) => {
         if (res.data) {
+          
+          const isRepeated = sales.find(
+            (sale: any) => sale.id === res.data.id
+          );
+          if (isRepeated) {
+            setMessage("El ticket ya ha sido cargado");
+            setType("error");
+            setOpen(true);
+            return;
+          }
+
+          dispatch(setSale(res.data));
           setMessage("Ticket cargado correctamente");
           setType("success");
           setOpen(true);
 
-          dispatch(setSale(res.data));
 
           setTimeout(() => {
+
+            setOpen(false);
             router.push("/stamp-bill");
           }, 2000);
         }
@@ -72,11 +85,11 @@ export default function SimpleInvoice() {
     },
   });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (sales.length > 0) {
-      router.push("/stamp-bill");
+      window.location.reload();
     }
-  }, [sales]);
+  }, []);
 
   return (
     <form

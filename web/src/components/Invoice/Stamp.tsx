@@ -48,6 +48,8 @@ export const Stamp = () => {
       // eslint-disable-next-line no-console
       setShowForms(true);
       setIsSearchingRFC(true);
+      console.log("SALES", sales);
+      console.log("RFC", formikSearchRFC.values.rfc);
       getClientOnline(sales[0].emisor.empresaId, formikSearchRFC.values.rfc)
         .then((res) => {
           if (
@@ -207,7 +209,7 @@ export const Stamp = () => {
         setOpen(true);
 
         setTimeout(() => {
-          window.location.reload();
+          // window.location.reload();
           router.push("/load-ticket");
         }, 2000);
       })

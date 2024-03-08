@@ -3,21 +3,11 @@ import SWSapienController from "./swSapien.controller";
 import { ClientOnlineController } from "./clientOnline.controller";
 import { v4 as uuid } from "uuid";
 import { MailerController } from "./mailer.controller";
-import Handlebars from "handlebars";
-
-import { X509Certificate } from "crypto";
-
-const http = axios.create({
-  baseURL: process.env.SW_SAPIEN_API_URL,
-  headers: {
-    "Content-Type": "application/jsontoxml",
-  },
-});
+import { DocumentsCFDController } from "./documentosCFD.controller";
 
 namespace StampBillController {
   export const stampBill = async (ctx: any) => {
     const { clientSelector, salesSelector, paymentMethod } = ctx.request.body;
-    const accessToken = await SWSapienController.auth();
     const empresaID = salesSelector[0].emisor.empresaId;
 
     console.log("CLIENT SELECTOR");
@@ -25,9 +15,6 @@ namespace StampBillController {
 
     console.log("SALES SELECTOR");
     console.log(salesSelector);
-
-    console.log("PAYMENT METHOD");
-    console.log(paymentMethod);
 
     // VERIFY CLIENT AND CHECK IF NEEDS TO BE UPDATED OR CREATED
     if (clientSelector.id !== "") {
@@ -53,7 +40,6 @@ namespace StampBillController {
       // create client
       clientSelector.empresaId = empresaID;
       clientSelector.id = uuid();
-      console.log(clientSelector);
 
       await ClientOnlineController.queryCreateClient(empresaID, clientSelector);
     }
@@ -66,17 +52,23 @@ namespace StampBillController {
     );
 
     console.log("RESPONSE");
-    console.log(response.data);
+    console.log(response);
 
-    // if (response.status !== 200) {
-    //   ctx.throw(response.status, response.data.message);
-    // }
+    if (!response) {
+      ctx.throw(400, "Error al crear factura");
+      return;
+    }
+
+    await DocumentsCFDController.queryCreateDocument(empresaID, response, paymentMethod);
 
     // // SEND MAIL
-    MailerController.sendStampBillMail(clientSelector.email, clientSelector.razonSocial);
+    MailerController.sendStampBillMail(
+      clientSelector.email,
+      clientSelector.razonSocial
+    );
 
     ctx.status = 200;
-    // ctx.body = accessToken;
+    ctx.body = response.data ? response.data : response;
   };
 
   const createBill = async (
@@ -111,7 +103,7 @@ namespace StampBillController {
         .toFixed(2),
       SubTotal: tickets
         .reduce((acc: any, ticket: any) => {
-          return acc + ticket.total;
+          return acc + ticket.subtotal;
         }, 0)
         .toFixed(2),
       LugarExpedicion: clientSelector.codigoPostal,
@@ -122,7 +114,6 @@ namespace StampBillController {
         RegimenFiscal: tickets[0].emisor.regimenFiscal,
       },
       Receptor: {
-        // Rfc: clientSelector.rfc,
         Rfc: "EKU9003173C9", // TODO: Change this to the real rfc
         Nombre: "ESCUELA KEMPER URGATE", // TODO: Change this to the real name
         DomicilioFiscalReceptor: "42501",
@@ -141,16 +132,8 @@ namespace StampBillController {
             ClaveUnidad: detalle.claveUnidad,
             Unidad: detalle.unidad,
             Descripcion: detalle.descripcion,
-            // VALOR UNITARIO = PRECIO UNITARIO + (PRECIO UNITARIO * IVA)
-            // ValorUnitario: detalle.valorUnitario,
-            ValorUnitario: (
-              detalle.valorUnitario +
-              detalle.valorUnitario * 0.16 
-            ).toFixed(2), // TODO: Change this to the real calculation
-            Importe: (
-              detalle.valorUnitario +
-              detalle.valorUnitario * 0.16
-            ).toFixed(2), // TODO: Change this to the real calculation
+            ValorUnitario: detalle.valorUnitario.toFixed(2), // TODO: Change this to the real calculation
+            Importe: detalle.valorUnitario.toFixed(2), // TODO: Change this to the real calculation
             Descuento: detalle.descuento.toFixed(2).toString(),
             ObjetoImp: "02", // TODO: Check with invewin if this is correct
             Impuestos:
@@ -160,19 +143,13 @@ namespace StampBillController {
                 : {
                     Traslados: detalle.impuestos.map((impuesto: any) => {
                       return {
-                        Base: "1.00",
+                        Base: detalle.valorUnitario.toFixed(2),
                         TasaOCuota: impuesto.tasaoCouta,
                         Impuesto: impuesto.impuesto,
-                        Importe: detalle.importe,
-                        TipoFactor: impuesto.tipoFactor,
-                      };
-                    }),
-                    Retenciones: detalle.impuestos.map((impuesto: any) => {
-                      return {
-                        Base: "1.00",
-                        TasaOCuota: impuesto.tasaoCouta, // TODO: Verifica la ortografía
-                        Impuesto: impuesto.impuesto,
-                        Importe: detalle.importe,
+                        Importe: (
+                          detalle.valorUnitario *
+                          parseFloat(impuesto.tasaoCouta)
+                        ).toFixed(2),
                         TipoFactor: impuesto.tipoFactor,
                       };
                     }),
@@ -191,36 +168,18 @@ namespace StampBillController {
           })
           .reduce((a: any, b: any) => a + b, 0)
           .toFixed(2),
-        // TotalImpuestosRetenidos debe ser igual a la suma de los importes de los impuestos retenidos
-        TotalImpuestosRetenidos: tickets
-          .flatMap((ticket: any) => {
-            return ticket.detalles.flatMap((detalle: any) => {
-              return detalle.impuestos.map((impuesto: any) => {
-                return detalle.importe * impuesto.tasaoCouta * detalle.cantidad;
-              });
-            });
-          })
-          .reduce((a: any, b: any) => a + b, 0)
-          .toFixed(2),
-        Retenciones: tickets.flatMap((ticket: any) => {
-          return ticket.detalles.flatMap((detalle: any) => {
-            return detalle.impuestos.map((impuesto: any) => {
-              return {
-                Impuesto: impuesto.impuesto,
-                Importe: detalle.importe,
-              };
-            });
-          });
-        }),
-
         Traslados: tickets.flatMap((ticket: any) => {
           return ticket.detalles.flatMap((detalle: any) => {
             return detalle.impuestos.map((impuesto: any) => {
               return {
-                Base: "1.00",
+                Base: detalle.valorUnitario.toFixed(2),
                 TasaOCuota: impuesto.tasaoCouta,
                 Impuesto: impuesto.impuesto,
-                Importe: detalle.importe,
+                Importe: parseFloat(
+                  (
+                    detalle.valorUnitario * parseFloat(impuesto.tasaoCouta)
+                  ).toFixed(2)
+                ),
                 TipoFactor: impuesto.tipoFactor,
               };
             });
@@ -231,9 +190,6 @@ namespace StampBillController {
 
     console.log("DATA");
     console.log(data);
-
-    console.log("RETENCIONES");
-    console.log(data.Impuestos.Retenciones);
 
     console.log("TRASLADOS");
     console.log(data.Impuestos.Traslados);
@@ -249,7 +205,7 @@ namespace StampBillController {
 
     const response = await SWSapienController.createBill(data);
 
-    return response.response;
+    return response;
   };
 }
 

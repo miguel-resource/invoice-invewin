@@ -16,7 +16,6 @@ namespace MailerController {
         const image = fs.readFileSync(path.join(__dirname, '../../public/templates/email/images/image-1.png'), 'utf8');
 
         // Handlebars.registerPartial('image', image);
-        console.log("SOURCE", source);
         const template = Handlebars.compile(source);
 
 

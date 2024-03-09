@@ -64,7 +64,8 @@ namespace StampBillController {
     // // SEND MAIL
     MailerController.sendStampBillMail(
       clientSelector.email,
-      clientSelector.razonSocial
+      clientSelector.razonSocial,
+      response.cfdi
     );
 
     ctx.status = 200;
@@ -187,21 +188,6 @@ namespace StampBillController {
         }),
       },
     };
-
-    console.log("DATA");
-    console.log(data);
-
-    console.log("TRASLADOS");
-    console.log(data.Impuestos.Traslados);
-
-    console.log("CONCEPTOS");
-    console.log(data.Conceptos);
-
-    console.log("CONCEPTOS IMPUESTOS");
-    console.log(data.Conceptos[0].Impuestos);
-
-    console.log("IMPUESTOS");
-    console.log(data.Impuestos);
 
     const response = await SWSapienController.createBill(data);
 

@@ -25,6 +25,7 @@ import { stampBill } from "@/services/StampBill";
 export const Stamp = () => {
   const sales = useSelector((state: any) => state.sales);
   const client = useSelector((state: any) => state.client);
+  const companyLogin = useSelector((state: any) => state.loginCompany);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -202,7 +203,12 @@ export const Stamp = () => {
 
     stampBill(data)
       .then((res) => {
-        console.log(res);
+        if (res.data.status === "error") {
+          setMessage(res.data.message);
+          setType("error");
+          setOpen(true);
+          return;
+        }
 
         setMessage("Factura timbrada correctamente");
         setType("success");

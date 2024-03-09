@@ -57,27 +57,27 @@ export type DataBill = {
             TipoFactor: string;
           }
         ];
-        Retenciones: [
-          {
-            Base: string;
-            Importe: string;
-            Impuesto: string;
-            TasaOCuota: string;
-            TipoFactor: string;
-          }
-        ];
+        // Retenciones: [
+        //   {
+        //     Base: string;
+        //     Importe: string;
+        //     Impuesto: string;
+        //     TasaOCuota: string;
+        //     TipoFactor: string;
+        //   }
+        // ];
       };
     }
   ];
   Impuestos?: {
     TotalImpuestosTrasladados: string;
-    TotalImpuestosRetenidos?: string;
-    Retenciones: [
-      {
-        Importe: string;
-        Impuesto: string;
-      }
-    ];
+    // TotalImpuestosRetenidos?: string;
+    // Retenciones: [
+    //   {
+    //     Importe: string;
+    //     Impuesto: string;
+    //   }
+    // ];
     Traslados: [
       {
         Base: string;
@@ -113,7 +113,7 @@ namespace SWSapienController {
 
   export const createBill = async (data: DataBill) => {
     const accessToken = await SWSapienController.auth();
-
+  
     const response = await http
       .post(process.env.SW_SAPIEN_API_URL + "/v3/cfdi33/issue/json/v4", data, {
         headers: {
@@ -129,7 +129,9 @@ namespace SWSapienController {
         return error;
       })
       .then((response: any) => {
-        return response;
+        console.log("RESPONSE createBill", response.data.data);
+
+        return response.data.data;
       });
 
     return response;

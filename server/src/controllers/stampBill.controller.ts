@@ -59,7 +59,7 @@ namespace StampBillController {
       return;
     }
 
-    await DocumentsCFDController.queryCreateDocument(empresaID, response, paymentMethod);
+    // await DocumentsCFDController.queryCreateDocument(empresaID, response, paymentMethod);
 
     // // SEND MAIL
     MailerController.sendStampBillMail(

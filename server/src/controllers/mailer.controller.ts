@@ -47,6 +47,11 @@ namespace MailerController {
           content: xmlBuffer,
           contentType: "application/xml",
         },
+        {
+          filename: "image-1.png",
+          path: path.join(__dirname, "../../public/templates/email/images/image-1.png"),
+          cid: "logo@cid",
+        }
       ],
     };
 

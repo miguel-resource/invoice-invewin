@@ -129,9 +129,9 @@ namespace SWSapienController {
         return error;
       })
       .then((response: any) => {
-        console.log("RESPONSE createBill", response.data.data);
-
-        return response.data.data;
+        console.log("RESPONSE createBill", response.data ? response.data : response.response.data);
+        
+        return response.data ? response.data.data : response.response.data
       });
 
     return response;

@@ -21,6 +21,7 @@ export default function LoginSupplier() {
     "success"
   );
   const [open, setOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -46,17 +47,15 @@ export default function LoginSupplier() {
           dispatch(setCompany(res.data));
 
           setTimeout(() => {
-
             router.push("/invoices");
           }, 2000);
         }
-      }
-      ).catch((err) => {
+      })
+      .catch((err) => {
         setMessage("Usuario o contraseña incorrectos");
         setType("error");
         setOpen(true);
-      }
-      );
+      });
   };
 
   return (
@@ -72,7 +71,7 @@ export default function LoginSupplier() {
           rounded-xl
         "
       >
-        <div className="mb-10px">
+        <div className="m mb-6">
           <label className="form-label mb-24">Usuario</label>
           <div className="mt-5px">
             <input
@@ -95,18 +94,34 @@ export default function LoginSupplier() {
           </div>
         </div>
 
-        <div className="mb-10px">
+        <div className="mb-6">
           <label className="form-label mb-24">Contraseña</label>
           <div className="mt-5px">
-            <input
-              type="password"
-              className="form-control mb-5px w-full"
-              placeholder="Contraseña"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              name="password"
-              id="password"
-            />
+            <div
+              className="flex justify-between   w-full"
+            >
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control w-full mr-3"
+                placeholder="Contraseña"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                name="password"
+                id="password"
+              />
+
+              {/* button to show password */}
+              <button
+                // type=""
+                type="button"
+                className="bg-slate-100 p-2 px-3 rounded-md hover:bg-slate-400 ease-in-out duration-200 group"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+              >
+                <i className="fas fa-eye text-slate-500 group-hover:text-slate-100"></i>
+              </button>
+            </div>
 
             <span
               className="text-red-500 text-xs italic"

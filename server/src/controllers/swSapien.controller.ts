@@ -113,6 +113,10 @@ namespace SWSapienController {
 
   export const createBill = async (data: DataBill) => {
     const accessToken = await SWSapienController.auth();
+
+    console.log("DATA", data);
+    console.log("Data Conceptos.Impuestos", data.Conceptos ? data.Conceptos[0].Impuestos : "No hay conceptos");
+    console.log("Data Impuestos", data.Impuestos);
   
     const response = await http
       .post(process.env.SW_SAPIEN_API_URL + "/v3/cfdi33/issue/json/v4", data, {

@@ -136,7 +136,7 @@ namespace StampBillController {
             Unidad: detalle.unidad,
             Descripcion: detalle.descripcion,
             ValorUnitario: detalle.valorUnitario.toFixed(2), // TODO: Change this to the real calculation
-            Importe: detalle.valorUnitario.toFixed(2), // TODO: Change this to the real calculation
+            Importe: (detalle.valorUnitario * detalle.cantidad).toFixed(2),
             Descuento: detalle.descuento.toFixed(2).toString(),
             ObjetoImp: "02", // TODO: Check with invewin if this is correct
             Impuestos:

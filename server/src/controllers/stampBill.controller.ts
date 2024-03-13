@@ -62,11 +62,13 @@ namespace StampBillController {
     // await DocumentsCFDController.queryCreateDocument(empresaID, response, paymentMethod);
 
     // // SEND MAIL
-    MailerController.sendStampBillMail(
-      clientSelector.email,
-      clientSelector.razonSocial,
-      response.cfdi
-    );
+    if (response.cfdi) {
+      MailerController.sendStampBillMail(
+        clientSelector.email,
+        clientSelector.razonSocial,
+        response.cfdi
+      );
+    }
 
     ctx.status = 200;
     ctx.body = response.data ? response.data : response;

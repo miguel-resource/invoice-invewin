@@ -144,11 +144,9 @@ export default function EditClient({
                   >
                     <option value="">Selecciona una opción</option>
                     {catalogRegime.map((item: any) =>
-                      item.fisisca === "Sí" ? (
                         <option key={item.clave} value={item.clave}>
                           {item.descripcion}
                         </option>
-                      ) : null
                     )}
                   </select>
                 </div>
@@ -177,6 +175,8 @@ export default function EditClient({
                   </select>
                 </div>
               </div>
+
+
             </div>
 
             {/* <div className="flex justify-center mt-8">

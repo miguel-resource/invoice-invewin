@@ -116,6 +116,13 @@ export default function Header() {
                     >
                       Certificados
                     </Link>
+                    <Link
+                      href="/email-message-template"
+                      className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-300 hover:text-gray-900 no-underline"
+                      role="menuitem"
+                    >
+                      Plantillas de Correo
+                    </Link>
                   </>
                 )}
               </div>

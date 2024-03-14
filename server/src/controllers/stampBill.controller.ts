@@ -86,7 +86,25 @@ namespace StampBillController {
 
     const methodPaymentNumber = parseInt(paymentMethod);
     const objectImpNumber = parseInt(tickets[0].detalles[0].objetoImp);
-
+    let transfers = tickets.flatMap((ticket: any) => {
+      return ticket.detalles.flatMap((detalle: any) => {
+        return detalle.impuestos.map((impuesto: any) => {
+          return {
+            Base: (
+              detalle.valorUnitario * detalle.cantidad
+            ).toFixed(2), 
+            TasaOCuota: impuesto.tasaoCouta,
+            Impuesto: impuesto.impuesto,
+            Importe: parseFloat(
+              (
+                detalle.valorUnitario * parseFloat(impuesto.tasaoCouta) * detalle.cantidad
+              ).toFixed(2)
+            ),
+            TipoFactor: impuesto.tipoFactor,
+          };
+        });
+      });
+    });
     const data = {
       Version: "4.0",
       Moneda: "MXN",
@@ -136,7 +154,7 @@ namespace StampBillController {
             Unidad: detalle.unidad,
             Descripcion: detalle.descripcion,
             ValorUnitario: detalle.valorUnitario.toFixed(2), // TODO: Change this to the real calculation
-            Importe: detalle.valorUnitario.toFixed(2), // TODO: Change this to the real calculation
+            Importe: (detalle.valorUnitario * detalle.cantidad).toFixed(2),
             Descuento: detalle.descuento.toFixed(2).toString(),
             ObjetoImp: "02", // TODO: Check with invewin if this is correct
             Impuestos:
@@ -146,12 +164,15 @@ namespace StampBillController {
                 : {
                     Traslados: detalle.impuestos.map((impuesto: any) => {
                       return {
-                        Base: detalle.valorUnitario.toFixed(2),
+                        Base: (
+                          detalle.valorUnitario * detalle.cantidad
+                        ).toFixed(2),
                         TasaOCuota: impuesto.tasaoCouta,
                         Impuesto: impuesto.impuesto,
                         Importe: (
                           detalle.valorUnitario *
-                          parseFloat(impuesto.tasaoCouta)
+                          parseFloat(impuesto.tasaoCouta) *
+                          detalle.cantidad
                         ).toFixed(2),
                         TipoFactor: impuesto.tipoFactor,
                       };
@@ -161,26 +182,24 @@ namespace StampBillController {
         });
       }),
       Impuestos: {
-        TotalImpuestosTrasladados: tickets
-          .flatMap((ticket: any) => {
-            return ticket.detalles.flatMap((detalle: any) => {
-              return detalle.impuestos.map((impuesto: any) => {
-                return detalle.importe * impuesto.tasaoCouta * detalle.cantidad;
-              });
-            });
-          })
-          .reduce((a: any, b: any) => a + b, 0)
-          .toFixed(2),
+        TotalImpuestosTrasladados: transfers.reduce(
+          (acc: any, traslado: any) => {
+            return acc + traslado.Importe;
+          },
+          0
+        ).toFixed(2),
         Traslados: tickets.flatMap((ticket: any) => {
           return ticket.detalles.flatMap((detalle: any) => {
             return detalle.impuestos.map((impuesto: any) => {
               return {
-                Base: detalle.valorUnitario.toFixed(2),
+                Base: (
+                  detalle.valorUnitario * detalle.cantidad
+                ).toFixed(2), 
                 TasaOCuota: impuesto.tasaoCouta,
                 Impuesto: impuesto.impuesto,
                 Importe: parseFloat(
                   (
-                    detalle.valorUnitario * parseFloat(impuesto.tasaoCouta)
+                    detalle.valorUnitario * parseFloat(impuesto.tasaoCouta) * detalle.cantidad
                   ).toFixed(2)
                 ),
                 TipoFactor: impuesto.tipoFactor,
